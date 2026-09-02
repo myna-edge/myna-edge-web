@@ -1,10 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import { DetailTabPanel } from "../components/issue/DetailTabs";
-import { IssueAside } from "../components/issue/IssueAside";
 import { IssueHeader } from "../components/issue/IssueHeader";
+import { IssueMetaBar } from "../components/issue/IssueMetaBar";
 import { IssueDetailSkeleton } from "../components/issue/IssueDetailSkeleton";
 import { IssueToolbar } from "../components/issue/IssueToolbar";
-import { IssueActions } from "../components/issue/IssueActions";
 import { IssueBreadcrumb } from "../components/layout/PageIntro";
 import { useIssueDetail } from "../hooks/useIssueDetail";
 
@@ -21,8 +20,9 @@ export function IssuePage() {
     selectedIndex,
     selectedEvent,
     displayStack,
+    hasPage,
+    hasEnvironment,
     hasContext,
-    hasClient,
     userCount,
     tab,
     setTab,
@@ -66,52 +66,42 @@ export function IssuePage() {
     <div className="issue-detail">
       <IssueBreadcrumb id={issue.id} />
 
-      <div className="issue-actions-mobile">
-        <IssueActions {...actionProps} inline />
-      </div>
-
-      <div className="detail-layout">
-        <div className="detail-main">
-          <div className="detail-workspace">
-            <IssueHeader issue={issue} selectedEvent={selectedEvent} />
-
-            {selectedEvent ? (
-              <IssueToolbar
-                events={events}
-                selectedIndex={selectedIndex}
-                selectedEvent={selectedEvent}
-                selectedEventId={selectedEventId!}
-                tab={tab}
-                displayStack={displayStack}
-                hasClient={hasClient}
-                hasContext={hasContext}
-                onSelectEvent={selectEvent}
-                onOlder={selectOlder}
-                onNewer={selectNewer}
-                onTabChange={setTab}
-              />
-            ) : null}
-
-            <DetailTabPanel
-              tab={tab}
-              displayStack={displayStack}
-              hasClient={hasClient}
-              hasContext={hasContext}
-              selectedEvent={selectedEvent}
-              copied={copied}
-              onCopy={onCopy}
-            />
-          </div>
+      <div className="detail-workspace">
+        <div className="issue-hero">
+          <IssueHeader issue={issue} selectedEvent={selectedEvent} />
+          <IssueMetaBar
+            userCount={userCount}
+            events={events}
+            selectedIndex={selectedIndex}
+            selectedEvent={selectedEvent}
+            selectedEventId={selectedEventId}
+            copied={copied}
+            onCopy={onCopy}
+            onSelectEvent={selectEvent}
+            onOlder={selectOlder}
+            onNewer={selectNewer}
+            {...actionProps}
+          />
         </div>
 
-        <IssueAside
-          issue={issue}
-          userCount={userCount}
-          pending={pending}
-          error={error}
+        <IssueToolbar
+          tab={tab}
+          displayStack={displayStack}
+          hasPage={hasPage}
+          hasEnvironment={hasEnvironment}
+          hasContext={hasContext}
+          onTabChange={setTab}
+        />
+
+        <DetailTabPanel
+          tab={tab}
+          displayStack={displayStack}
+          hasPage={hasPage}
+          hasEnvironment={hasEnvironment}
+          hasContext={hasContext}
+          selectedEvent={selectedEvent}
           copied={copied}
           onCopy={onCopy}
-          {...actionProps}
         />
       </div>
     </div>

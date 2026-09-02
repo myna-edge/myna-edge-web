@@ -2,28 +2,45 @@ import { StackTraceView } from "./StackTraceView";
 import { ClientPanel } from "./ClientPanel";
 import type { EventRow } from "../../api";
 import { extraEntries, formatExtraValue, occurrenceRows } from "./issueMeta";
+import { environmentSections, pageSections } from "./clientMeta";
 import { MetaTable } from "./MetaTable";
 
-export type DetailTab = "stack" | "client" | "context";
+export type DetailTab = "stack" | "page" | "environment" | "context";
 
 type TabDef = { id: DetailTab; label: string };
 
 export function visibleDetailTabs(
   displayStack: string | null,
-  hasClient: boolean,
+  hasPage: boolean,
+  hasEnvironment: boolean,
   hasContext: boolean,
 ): TabDef[] {
   const tabs: TabDef[] = [];
   if (displayStack) tabs.push({ id: "stack", label: "堆栈" });
-  if (hasClient) tabs.push({ id: "client", label: "客户端" });
+  if (hasPage) tabs.push({ id: "page", label: "页面" });
+  if (hasEnvironment) tabs.push({ id: "environment", label: "环境" });
   if (hasContext) tabs.push({ id: "context", label: "上下文" });
   return tabs;
+}
+
+export function pickDefaultDetailTab(
+  displayStack: string | null,
+  hasPage: boolean,
+  hasEnvironment: boolean,
+  hasContext: boolean,
+): DetailTab {
+  if (displayStack) return "stack";
+  if (hasPage) return "page";
+  if (hasEnvironment) return "environment";
+  if (hasContext) return "context";
+  return "stack";
 }
 
 type Props = {
   tab: DetailTab;
   displayStack: string | null;
-  hasClient: boolean;
+  hasPage: boolean;
+  hasEnvironment: boolean;
   hasContext: boolean;
   selectedEvent: EventRow | null;
   copied: string | null;
@@ -33,13 +50,14 @@ type Props = {
 export function DetailTabPanel({
   tab,
   displayStack,
-  hasClient,
+  hasPage,
+  hasEnvironment,
   hasContext,
   selectedEvent,
   copied,
   onCopy,
 }: Props) {
-  const tabs = visibleDetailTabs(displayStack, hasClient, hasContext);
+  const tabs = visibleDetailTabs(displayStack, hasPage, hasEnvironment, hasContext);
 
   if (!selectedEvent) {
     return (
@@ -67,8 +85,22 @@ export function DetailTabPanel({
         />
       ) : null}
 
-      {tab === "client" && hasClient ? (
-        <ClientPanel event={selectedEvent} copied={copied} onCopy={onCopy} />
+      {tab === "page" && hasPage ? (
+        <ClientPanel
+          sections={pageSections(selectedEvent)}
+          emptyText="本条事件没有页面信息。"
+          copied={copied}
+          onCopy={onCopy}
+        />
+      ) : null}
+
+      {tab === "environment" && hasEnvironment ? (
+        <ClientPanel
+          sections={environmentSections(selectedEvent)}
+          emptyText="本条事件没有环境信息。"
+          copied={copied}
+          onCopy={onCopy}
+        />
       ) : null}
 
       {tab === "context" && hasContext ? (
@@ -96,3 +128,4 @@ export function DetailTabPanel({
     </div>
   );
 }
+

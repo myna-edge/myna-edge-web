@@ -59,6 +59,49 @@ export function hasClientInfo(event: EventRow | null | undefined): boolean {
   return !!(event.user_agent || event.url || event.client_ip);
 }
 
+export function hasPageInfo(event: EventRow | null | undefined): boolean {
+  if (!event) return false;
+  return pageSections(event).length > 0;
+}
+
+export function hasEnvironmentInfo(event: EventRow | null | undefined): boolean {
+  if (!event) return false;
+  return environmentSections(event).length > 0;
+}
+
+function buildPageRows(event: EventRow): MetaRow[] {
+  const page = event.client?.page;
+  return [
+    row("标题", page?.title),
+    row("URL", page?.url ?? event.url ?? undefined, {
+      mono: true,
+      href: page?.url ?? event.url ?? undefined,
+    }),
+    row("路径", page?.path, { mono: true }),
+    row("查询", page?.search, { mono: true }),
+    row("Hash", page?.hash, { mono: true }),
+    row("Referrer", page?.referrer, { mono: true, href: page?.referrer }),
+    row("可见性", page?.visibilityState),
+    row("页面隐藏", boolLabel(page?.hidden)),
+    row("就绪状态", page?.readyState),
+    row("字符集", page?.characterSet),
+    row("兼容模式", page?.compatMode),
+    row("文档语言", page?.lang),
+    row("文档方向", page?.dir),
+    row("History 长度", page?.historyLength?.toString()),
+  ].filter(Boolean) as MetaRow[];
+}
+
+export function pageSections(event: EventRow): ClientSection[] {
+  const rows = buildPageRows(event);
+  return rows.length > 0 ? [{ title: "页面", rows }] : [];
+}
+
+/** Everything under 客户端 except 页面. */
+export function environmentSections(event: EventRow): ClientSection[] {
+  return clientSections(event).filter((section) => section.title !== "页面");
+}
+
 export function clientSections(event: EventRow): ClientSection[] {
   const c = event.client;
   const uaFallback = parseBrowserFromUa(event.user_agent);
@@ -177,23 +220,7 @@ export function clientSections(event: EventRow): ClientSection[] {
   ].filter(Boolean) as MetaRow[];
   if (displayRows.length > 0) sections.push({ title: "显示", rows: displayRows });
 
-  const page = c?.page;
-  const pageRows = [
-    row("标题", page?.title),
-    row("URL", page?.url ?? event.url ?? undefined, { mono: true, href: page?.url ?? event.url ?? undefined }),
-    row("路径", page?.path, { mono: true }),
-    row("查询", page?.search, { mono: true }),
-    row("Hash", page?.hash, { mono: true }),
-    row("Referrer", page?.referrer, { mono: true, href: page?.referrer }),
-    row("可见性", page?.visibilityState),
-    row("页面隐藏", boolLabel(page?.hidden)),
-    row("就绪状态", page?.readyState),
-    row("字符集", page?.characterSet),
-    row("兼容模式", page?.compatMode),
-    row("文档语言", page?.lang),
-    row("文档方向", page?.dir),
-    row("History 长度", page?.historyLength?.toString()),
-  ].filter(Boolean) as MetaRow[];
+  const pageRows = buildPageRows(event);
   if (pageRows.length > 0) sections.push({ title: "页面", rows: pageRows });
 
   const perf = c?.performance;
