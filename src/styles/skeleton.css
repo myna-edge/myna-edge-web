@@ -142,9 +142,8 @@
 }
 
 .skeleton-workspace .skeleton-issue-header {
-  border: none;
-  border-radius: 0;
-  border-bottom: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .skeleton-issue-title {
@@ -153,16 +152,34 @@
 }
 
 .skeleton-workspace {
+  display: grid;
+  gap: 1rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.skeleton-workspace > .skeleton-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  border-bottom: 1px solid var(--border);
   background: var(--surface);
-  overflow: hidden;
 }
 
 .skeleton-workspace-body {
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.375rem;
   display: grid;
   gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
 }
 
 .skeleton-aside-block {
