@@ -3,7 +3,7 @@ export function apiBase(): string {
   if (!raw) {
     if (import.meta.env.PROD) {
       throw new Error(
-        "VITE_API_BASE 未配置。在 apps/web/.env.production 填入 Worker 地址后，重新执行 npm run deploy:web",
+        "VITE_API_BASE 未配置。请在 Cloudflare Pages 的 Environment variables（或本地 .env.production）中填入 API Worker 地址后重新构建",
       );
     }
     return "";
