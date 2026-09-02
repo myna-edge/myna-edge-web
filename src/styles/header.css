@@ -1,0 +1,227 @@
+/* ── Header ── */
+
+.app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding-top: max(0px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--border);
+  background: var(--bar-bg);
+  backdrop-filter: blur(10px);
+}
+
+.shell-inner {
+  width: 100%;
+  max-width: var(--shell-width);
+  margin-inline: auto;
+  padding-left: max(var(--shell-pad-x), env(safe-area-inset-left));
+  padding-right: max(var(--shell-pad-x), env(safe-area-inset-right));
+}
+
+.app-bar-desktop {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: var(--nav-h);
+}
+
+.app-bar-side {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.app-bar-side-start {
+  justify-self: start;
+}
+
+.app-bar-center {
+  justify-self: center;
+}
+
+.app-bar-side-end {
+  justify-self: end;
+}
+
+.app-bar-mobile {
+  display: none;
+}
+
+.app-bar-mobile-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: var(--nav-h);
+  gap: 0.65rem;
+}
+
+.app-bar-mobile-menu {
+  justify-self: center;
+}
+
+.app-bar-mobile-row .theme-toggle {
+  justify-self: end;
+}
+
+.app-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-syne);
+  font-weight: 700;
+  font-size: var(--text-base);
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  flex-shrink: 0;
+}
+
+.app-bar-name {
+  line-height: 1;
+}
+
+.app-bar-logo {
+  width: 1.625rem;
+  height: 1.625rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.nav-links a {
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius);
+  color: var(--fg-muted);
+  font-size: var(--text-ui);
+  font-weight: 500;
+  transition: color 0.12s ease, background 0.12s ease;
+}
+
+.nav-links a:hover {
+  color: var(--fg);
+  background: var(--surface-hover);
+}
+
+.nav-links a.active {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--fg);
+}
+
+.theme-toggle-btn.is-active {
+  color: var(--fg);
+  background: var(--surface-hover);
+}
+
+.theme-toggle-btn:focus-visible,
+.menu-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+.menu-btn:hover {
+  color: var(--fg);
+  border-color: var(--border-strong);
+}
+
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: var(--overlay);
+  cursor: pointer;
+}
+
+.menu-panel {
+  position: relative;
+  z-index: 50;
+  padding: 0.25rem 0 0.875rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.menu-nav {
+  display: grid;
+}
+
+.menu-link {
+  display: block;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg);
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+.menu-link:last-child {
+  border-bottom: none;
+}
+
+.menu-link.is-active {
+  color: var(--accent);
+}
+
+.menu-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.menu-footer-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+

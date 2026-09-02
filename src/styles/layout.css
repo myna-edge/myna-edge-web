@@ -1,0 +1,67 @@
+/* ── Layout ── */
+
+.shell-main {
+  width: 100%;
+  max-width: var(--shell-width);
+  margin-inline: auto;
+  padding: var(--space-section) max(var(--shell-pad-x), env(safe-area-inset-right))
+    max(3rem, env(safe-area-inset-bottom)) max(var(--shell-pad-x), env(safe-area-inset-left));
+  flex: 1;
+}
+
+.shell-main--issue {
+  max-width: var(--shell-width-issue);
+}
+
+.shell--issue .shell-inner {
+  max-width: var(--shell-width-issue);
+}
+
+.page {
+  display: grid;
+  gap: var(--space-page);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.muted {
+  color: var(--fg-muted);
+}
+
+.empty {
+  padding: 3rem 1.25rem;
+  text-align: center;
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+}
+
+.empty a {
+  color: var(--accent);
+}
+
+.empty a:hover {
+  text-decoration: underline;
+}
+
+.flash-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.flash-ok {
+  margin: 0;
+  color: var(--ok);
+  font-size: var(--text-sm);
+}
+
+.back-link {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+.back-link:hover {
+  color: var(--fg);
+}

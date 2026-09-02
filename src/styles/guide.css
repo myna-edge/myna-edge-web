@@ -1,0 +1,18 @@
+.steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--fg-muted);
+  font-size: var(--text-ui);
+}
+
+.steps li + li {
+  margin-top: 0.5rem;
+}
+
+.steps a {
+  color: var(--accent);
+}
+
+.steps a:hover {
+  text-decoration: underline;
+}

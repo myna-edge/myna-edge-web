@@ -1,0 +1,101 @@
+:root {
+  /* ═══════════════════════════════════════════════════════════
+     Brand — 换主题色只需改下面两行（hue / saturation）
+     全站 accent、按钮、Tab、图表、选中等都会跟着变
+     ═══════════════════════════════════════════════════════════ */
+  --brand-h: 32;
+  --brand-s: 90%;
+
+  /* 明暗模式下 accent 亮度；对比不够时可微调 */
+  --accent-l-light: 42%;
+  --accent-l-dark: 58%;
+  --accent-dim-mix-light: 12%;
+  --accent-dim-mix-dark: 16%;
+
+  /* 语义色（成功 / 危险，与品牌色独立） */
+  --ok-h: 142;
+  --danger-h: 0;
+
+  /* 字体 & 布局（标准密度，非紧凑） */
+  --font-syne: "Syne", system-ui, sans-serif;
+  --font-figtree: "Figtree", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  /* 字号（正文 14px；间距仍用下方标准值） */
+  --text-base: 0.875rem;   /* 14px 正文 */
+  --text-ui: 0.875rem;     /* 14px 按钮、输入、Tab */
+  --text-sm: 0.8125rem;    /* 13px 次要说明 */
+  --text-xs: 0.75rem;      /* 12px 标签、元数据 */
+  --text-title: 1.125rem;  /* 18px 问题标题等 */
+  --text-display: 1.25rem; /* 20px 页面主标题 */
+  --leading: 1.5;
+  --radius: 0.5rem;
+  --nav-h: 3.5rem;
+  --shell-width: 1080px;
+  --shell-width-issue: 1280px;
+  --shell-pad-x: 1.5rem;
+  --space-page: 1.25rem;
+  --space-section: 1.25rem;
+  --pad-card: 1.25rem 1.5rem;
+  --pad-control-y: 0.5rem;
+  --pad-control-x: 0.875rem;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --accent: hsl(var(--brand-h) var(--brand-s) var(--accent-l-light));
+  --accent-dim: color-mix(in srgb, var(--accent) var(--accent-dim-mix-light), transparent);
+  --accent-fg: hsl(0 0% 100%);
+  --warn-dim: var(--accent-dim);
+
+  /* 中性灰底（参考 Cursor / VS Code Light Modern），与暗色主题同一套层级逻辑 */
+  --bg: hsl(0 0% 98%);
+  --bg-subtle: hsl(0 0% 96%);
+  --fg: hsl(0 0% 16%);
+  --fg-muted: hsl(0 0% 42%);
+  --surface: hsl(0 0% 100%);
+  --surface-hover: hsl(0 0% 97%);
+  --border: hsl(0 0% 88%);
+  --border-strong: hsl(0 0% 78%);
+
+  --danger: hsl(var(--danger-h) 72% 46%);
+  --ok: hsl(var(--ok-h) 60% 32%);
+  --ok-dim: color-mix(in srgb, var(--ok) 12%, transparent);
+
+  --bar-bg: hsl(0 0% 100% / 0.92);
+  --code-bg: hsl(0 0% 96%);
+  --code-fg: hsl(0 0% 28%);
+  --overlay: hsl(0 0% 0% / 0.35);
+  --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.06);
+  --shadow-popover: 0 8px 24px hsl(0 0% 0% / 0.1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --accent: hsl(var(--brand-h) var(--brand-s) var(--accent-l-dark));
+  --accent-dim: color-mix(in srgb, var(--accent) var(--accent-dim-mix-dark), transparent);
+  --accent-fg: hsl(0 0% 9%);
+  --warn-dim: var(--accent-dim);
+
+  /* 中性灰底（参考 Cursor / VS Code Dark Modern），避免蓝灰 tint 导致文字发糊 */
+  --bg: hsl(0 0% 10%);
+  --bg-subtle: hsl(0 0% 13%);
+  --fg: hsl(0 0% 84%);
+  --fg-muted: hsl(0 0% 62%);
+  --surface: hsl(0 0% 15%);
+  --surface-hover: hsl(0 0% 18%);
+  --border: hsl(0 0% 24%);
+  --border-strong: hsl(0 0% 34%);
+
+  --danger: hsl(var(--danger-h) 72% 68%);
+  --ok: hsl(var(--ok-h) 50% 55%);
+  --ok-dim: color-mix(in srgb, var(--ok) 14%, transparent);
+
+  --bar-bg: hsl(0 0% 10% / 0.92);
+  --code-bg: hsl(0 0% 8%);
+  --code-fg: hsl(0 0% 72%);
+  --overlay: hsl(0 0% 0% / 0.55);
+  --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.35);
+  --shadow-popover: 0 8px 24px hsl(0 0% 0% / 0.5);
+}

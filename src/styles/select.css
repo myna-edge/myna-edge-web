@@ -1,0 +1,124 @@
+/* ── Custom select (replaces native <select> dropdown) ── */
+
+.select-root {
+  position: relative;
+  display: inline-flex;
+  min-width: 7rem;
+}
+
+.select-root-block {
+  display: flex;
+  width: 100%;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 2.375rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--fg);
+  padding: var(--pad-control-y) var(--pad-control-x);
+  font-size: var(--text-ui);
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.select-trigger:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
+}
+
+.select-trigger:focus {
+  outline: none;
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+
+.select-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.select-chevron {
+  flex-shrink: 0;
+  color: var(--fg-muted);
+  transition: transform 0.15s ease, color 0.12s ease;
+}
+
+.select-trigger:hover .select-chevron,
+.select-trigger:focus .select-chevron {
+  color: var(--fg);
+}
+
+.select-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.select-menu {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.375rem;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm), var(--shadow-popover);
+  max-height: 16rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.select-option {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: calc(var(--radius) - 0.125rem);
+  background: transparent;
+  color: var(--fg);
+  padding: 0.5rem 0.625rem;
+  font-size: var(--text-ui);
+  font-family: inherit;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.select-option:hover,
+.select-option.is-active {
+  background: var(--surface-hover);
+}
+
+.select-option.is-selected {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.select-option.is-selected.is-active {
+  background: var(--accent-dim);
+}
+
+.select-option:focus {
+  outline: none;
+  background: var(--surface-hover);
+}
+
+.select-option.is-selected:focus {
+  background: var(--accent-dim);
+}

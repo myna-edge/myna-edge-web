@@ -1,0 +1,117 @@
+/* ── Stack trace ── */
+
+.stack-trace {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.stack-trace-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.stack-trace-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stack-trace-body {
+  max-height: min(60vh, 40rem);
+  overflow: auto;
+  background: var(--code-bg);
+}
+
+.stack-headline {
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg);
+  font-size: var(--text-sm);
+  line-height: var(--leading);
+  overflow-wrap: anywhere;
+  background: var(--code-bg);
+}
+
+.stack-frames {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stack-frame {
+  display: grid;
+  gap: 0.1875rem;
+  padding: 0.625rem 1rem;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  background: var(--code-bg);
+}
+
+.stack-frame:first-child {
+  border-top: none;
+}
+
+.stack-frame.is-in-app {
+  background: var(--code-bg);
+  box-shadow: inset 3px 0 0 var(--border-strong);
+  padding-left: calc(1rem - 3px);
+}
+
+.stack-frame.is-lib .stack-fn,
+.stack-frame.is-lib .stack-loc {
+  color: var(--fg-muted);
+}
+
+.stack-fn {
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+
+.stack-loc {
+  color: var(--fg-muted);
+  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
+}
+
+.stack-collapse {
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.stack-collapse:first-child {
+  border-top: none;
+}
+
+.stack-collapse-toggle {
+  width: 100%;
+  border: none;
+  background: var(--code-bg);
+  color: var(--fg-muted);
+  cursor: pointer;
+  text-align: left;
+  padding: 0.625rem 1rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.stack-collapse-toggle:hover {
+  color: var(--fg);
+  background: var(--surface-hover);
+}
+
+.stack-frames-nested {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
