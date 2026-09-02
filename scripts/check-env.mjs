@@ -13,7 +13,7 @@ if (!apiBase) {
 
 推荐（Cloudflare Pages）：
   项目 Settings → Environment variables 添加
-    VITE_API_BASE=https://myna-api.<你的子域>.workers.dev
+    VITE_API_BASE=https://myna-edge-api.<你的子域>.workers.dev
 
 可选（本地 CLI 部署）：
   复制 .env.production.example → .env.production 并填写同上变量

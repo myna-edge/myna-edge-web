@@ -5,7 +5,7 @@
 
 ## 1. 先部署 API
 
-拿到 Worker 地址，例如：`https://myna-api.<子域>.workers.dev`  
+拿到 Worker 地址，例如：`https://myna-edge-api.<子域>.workers.dev`  
 （见 [myna-edge-api 部署说明](https://github.com/myna-edge/myna-edge-api/blob/main/docs/deploy.md)）
 
 ## 2. 用 GitHub 连接 Pages
@@ -20,7 +20,7 @@
 
 | 变量 | 说明 |
 |------|------|
-| `VITE_API_BASE` | API Worker 地址，如 `https://myna-api.<子域>.workers.dev` |
+| `VITE_API_BASE` | API Worker 地址，如 `https://myna-edge-api.<子域>.workers.dev` |
 | `VITE_MYNA_INGEST_TOKEN` | 可选；若 API 启用了 ingest token，可预填接入页 |
 | `VITE_MYNA_ADMIN_TOKEN` | 可选；若 API 设置了 `MYNA_ADMIN_TOKEN`，Webhook 写入需要 |
 
