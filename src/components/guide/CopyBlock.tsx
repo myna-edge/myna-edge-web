@@ -1,23 +1,19 @@
-import { useCopy } from "../../hooks/useCopy";
+import type { ReactNode } from "react";
+import { CodeBlock, type CodeLanguage } from "../ui/CodeBlock";
 
 type CopyBlockProps = {
   title: string;
   code: string;
+  language?: CodeLanguage;
+  note?: ReactNode;
 };
 
-export function CopyBlock({ title, code }: CopyBlockProps) {
-  const { copied, onCopy } = useCopy();
-
+export function CopyBlock({ title, code, language, note }: CopyBlockProps) {
   return (
     <section className="card">
-      <div className="card-head">
-        <h2 className="card-title">{title}</h2>
-        <button type="button" className="btn btn-ghost" onClick={() => onCopy(title, code)}>
-          {copied === title ? "已复制" : "复制"}
-        </button>
-      </div>
-      <pre className="code-block">{code}</pre>
+      <h2 className="card-title">{title}</h2>
+      <CodeBlock code={code} language={language} copyable />
+      {note ? <p className="card-note muted">{note}</p> : null}
     </section>
   );
 }
-

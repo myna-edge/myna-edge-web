@@ -1,5 +1,21 @@
-.steps {
+.guide-step-label {
   margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.guide-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.guide-link:hover {
+  filter: brightness(1.08);
+}
+
+.steps {
+  margin: 0 0 1rem;
   padding-left: 1.25rem;
   color: var(--fg-muted);
   font-size: var(--text-ui);
@@ -15,4 +31,10 @@
 
 .steps a:hover {
   text-decoration: underline;
+}
+
+.card-note a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
 }

@@ -68,6 +68,12 @@
   --bar-edge: hsl(0 0% 100% / 0.5);
   --code-bg: hsl(0 0% 96%);
   --code-fg: hsl(0 0% 28%);
+  --code-keyword: hsl(205 70% 38%);
+  --code-string: hsl(140 45% 32%);
+  --code-number: hsl(24 80% 40%);
+  --code-comment: hsl(0 0% 52%);
+  --code-function: hsl(32 75% 40%);
+  --code-tag: hsl(200 65% 36%);
   --overlay: hsl(0 0% 0% / 0.35);
   --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.06);
   --shadow-popover: 0 8px 24px hsl(0 0% 0% / 0.1);
@@ -102,6 +108,12 @@
   --bar-edge: hsl(0 0% 100% / 0.08);
   --code-bg: hsl(0 0% 8%);
   --code-fg: hsl(0 0% 72%);
+  --code-keyword: hsl(205 75% 72%);
+  --code-string: hsl(140 40% 65%);
+  --code-number: hsl(32 85% 62%);
+  --code-comment: hsl(0 0% 48%);
+  --code-function: hsl(40 80% 68%);
+  --code-tag: hsl(200 70% 68%);
   --overlay: hsl(0 0% 0% / 0.55);
   --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.35);
   --shadow-popover: 0 8px 24px hsl(0 0% 0% / 0.5);

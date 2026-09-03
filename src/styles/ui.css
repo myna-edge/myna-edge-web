@@ -65,6 +65,7 @@
   color: var(--fg);
   padding: var(--pad-control-y) var(--pad-control-x);
   font-size: var(--text-ui);
+  line-height: 1.25;
   transition: border-color 0.12s ease;
   flex: 1;
   min-width: 0;
@@ -234,6 +235,7 @@
   cursor: pointer;
   font-weight: 600;
   font-size: var(--text-ui);
+  line-height: 1.25;
   padding: var(--pad-control-y) 1rem;
   transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
 }

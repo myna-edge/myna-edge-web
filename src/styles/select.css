@@ -17,13 +17,14 @@
   justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
-  min-height: 2.375rem;
+  min-height: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--fg);
   padding: var(--pad-control-y) var(--pad-control-x);
   font-size: var(--text-ui);
+  line-height: 1.25;
   font-family: inherit;
   font-weight: 500;
   cursor: pointer;

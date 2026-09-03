@@ -16,10 +16,105 @@
   line-height: 1.55;
 }
 
+.code-block-wrap {
+  position: relative;
+}
+
+.code-block-wrap .code-block {
+  padding-right: 5rem;
+}
+
+.code-block-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--fg-muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.code-block-copy:hover {
+  color: var(--fg);
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+.code-block-copy.is-copied {
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 35%, var(--border));
+}
+
+.code-block--hljs {
+  white-space: pre;
+  word-break: normal;
+}
+
+.code-block--hljs code {
+  display: block;
+  font: inherit;
+  color: inherit;
+  white-space: inherit;
+  background: transparent;
+}
+
+/* Soft IDE-like tokens (follow theme) */
+.code-block--hljs .hljs-keyword,
+.code-block--hljs .hljs-selector-tag,
+.code-block--hljs .hljs-built_in {
+  color: var(--code-keyword);
+}
+
+.code-block--hljs .hljs-string,
+.code-block--hljs .hljs-attr,
+.code-block--hljs .hljs-attribute {
+  color: var(--code-string);
+}
+
+.code-block--hljs .hljs-number,
+.code-block--hljs .hljs-literal {
+  color: var(--code-number);
+}
+
+.code-block--hljs .hljs-comment,
+.code-block--hljs .hljs-quote {
+  color: var(--code-comment);
+  font-style: italic;
+}
+
+.code-block--hljs .hljs-title,
+.code-block--hljs .hljs-title.function_,
+.code-block--hljs .hljs-section {
+  color: var(--code-function);
+}
+
+.code-block--hljs .hljs-variable,
+.code-block--hljs .hljs-template-variable,
+.code-block--hljs .hljs-params,
+.code-block--hljs .hljs-name,
+.code-block--hljs .hljs-tag {
+  color: var(--code-tag);
+}
+
+.code-block--hljs .hljs-meta,
+.code-block--hljs .hljs-punctuation {
+  color: var(--code-fg);
+}
+
 .code-block-dsn {
   max-height: none;
-  font-size: var(--text-ui);
-  color: var(--fg);
 }
 
 .code-block-tall {
