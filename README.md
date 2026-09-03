@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-开发服务器 `http://127.0.0.1:43127`，`/api` 代理到本地 API（`:8787`）。请先启动 [myna-edge-api](https://github.com/myna-edge/myna-edge-api)。
+开发服务器默认 `http://127.0.0.1:43127`（`host: true` 时也可通过局域网 IP 访问）。复制 `.env.development.example` 为 `.env.development` 并设置 `VITE_API_BASE`（指向本机或局域网 API，如 `http://192.168.x.x:8787`）。请先启动 [myna-edge-api](https://github.com/myna-edge/myna-edge-api)。
 
 ## 部署（推荐）
 

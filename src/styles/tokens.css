@@ -63,12 +63,16 @@
   --ok: hsl(var(--ok-h) 60% 32%);
   --ok-dim: color-mix(in srgb, var(--ok) 12%, transparent);
 
-  --bar-bg: hsl(0 0% 100% / 0.92);
+  --bar-bg: hsl(0 0% 100% / 0.22);
+  --bar-shine: hsl(0 0% 100% / 0.28);
+  --bar-edge: hsl(0 0% 100% / 0.5);
   --code-bg: hsl(0 0% 96%);
   --code-fg: hsl(0 0% 28%);
   --overlay: hsl(0 0% 0% / 0.35);
   --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.06);
   --shadow-popover: 0 8px 24px hsl(0 0% 0% / 0.1);
+  --shadow-bar: 0 1px 0 var(--bar-edge);
+  --bar-border: color-mix(in srgb, var(--border) 55%, transparent);
 }
 
 [data-theme="dark"] {
@@ -93,10 +97,14 @@
   --ok: hsl(var(--ok-h) 50% 55%);
   --ok-dim: color-mix(in srgb, var(--ok) 14%, transparent);
 
-  --bar-bg: hsl(0 0% 10% / 0.92);
+  --bar-bg: hsl(0 0% 8% / 0.28);
+  --bar-shine: hsl(0 0% 100% / 0.05);
+  --bar-edge: hsl(0 0% 100% / 0.08);
   --code-bg: hsl(0 0% 8%);
   --code-fg: hsl(0 0% 72%);
   --overlay: hsl(0 0% 0% / 0.55);
   --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.35);
   --shadow-popover: 0 8px 24px hsl(0 0% 0% / 0.5);
+  --shadow-bar: none;
+  --bar-border: hsl(0 0% 100% / 0.08);
 }

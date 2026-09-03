@@ -74,7 +74,7 @@ export function SettingsPage() {
           />
           <p className="form-hint muted">
             {import.meta.env.DEV
-              ? "留空则使用本地开发代理（:43127 → :8787）。"
+              ? "默认来自 .env.development 的 VITE_API_BASE；留空则用该默认值。"
               : "填写 Worker 根地址，不要带 /api。"}
           </p>
         </div>

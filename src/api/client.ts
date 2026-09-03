@@ -8,7 +8,9 @@ function envApiBase(): string {
         "VITE_API_BASE 未配置。请在 Cloudflare Pages 的 Environment variables（或本地 .env.production）中填入 API Worker 地址后重新构建",
       );
     }
-    return "";
+    throw new Error(
+      "VITE_API_BASE 未配置。请复制 .env.development.example 为 .env.development 并填入 API 地址",
+    );
   }
   return raw.replace(/\/$/, "");
 }
@@ -28,15 +30,13 @@ export function apiBase(override?: string): string {
 export function ingestDsn(overrideBase?: string): string {
   const base = apiBase(overrideBase);
   if (base) return base;
-  if (import.meta.env.DEV) return "http://127.0.0.1:43127";
   return "";
 }
 
 export function apiDisplayBase(overrideBase?: string): string {
   const base = apiBase(overrideBase);
   if (base) return base;
-  if (import.meta.env.DEV) return "http://127.0.0.1:43127（代理 → :8787）";
-  return "（开发代理）";
+  return "（未配置 VITE_API_BASE）";
 }
 
 /** Shared secret for webhook writes + guide snippet prefill. */
