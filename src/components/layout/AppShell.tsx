@@ -22,6 +22,7 @@ export function AppShell() {
   return (
     <MobileNavProvider>
       <div className={`shell${isIssueDetail ? " shell--issue" : ""}`}>
+        <div className="ambient" aria-hidden="true" />
         <header className="app-bar">
           <div className="shell-inner">
             <div className="app-bar-desktop">

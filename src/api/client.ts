@@ -27,9 +27,9 @@ export function apiBase(override?: string): string {
 
 export function ingestDsn(overrideBase?: string): string {
   const base = apiBase(overrideBase);
-  if (base) return `${base}/api/ingest`;
-  if (import.meta.env.DEV) return "http://127.0.0.1:43127/api/ingest";
-  return "/api/ingest";
+  if (base) return base;
+  if (import.meta.env.DEV) return "http://127.0.0.1:43127";
+  return "";
 }
 
 export function apiDisplayBase(overrideBase?: string): string {
@@ -39,19 +39,14 @@ export function apiDisplayBase(overrideBase?: string): string {
   return "（开发代理）";
 }
 
-/** Panel write auth + guide snippet token (one shared secret in settings). */
-export function adminToken(): string {
+/** Shared secret for webhook writes + guide snippet prefill. */
+export function apiSecret(): string {
   if (hasConnectionOverride()) return effectiveConnection().secret.trim();
-  return (import.meta.env.VITE_MYNA_ADMIN_TOKEN as string | undefined)?.trim() || "";
-}
-
-export function ingestToken(): string {
-  if (hasConnectionOverride()) return effectiveConnection().secret.trim();
-  return (import.meta.env.VITE_MYNA_INGEST_TOKEN as string | undefined)?.trim() || "";
+  return (import.meta.env.VITE_MYNA_SECRET as string | undefined)?.trim() || "";
 }
 
 export function adminHeaders(): HeadersInit {
-  const token = adminToken();
+  const token = apiSecret();
   if (!token) return {};
   return { "X-Myna-Admin-Token": token };
 }

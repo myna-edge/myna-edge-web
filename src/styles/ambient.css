@@ -1,0 +1,47 @@
+/* Soft static brand wash — no motion, stays behind content */
+
+.shell {
+  isolation: isolate;
+}
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 52% 44% at 6% -4%,
+      color-mix(in srgb, var(--accent) 13%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 40% 34% at 98% 10%,
+      color-mix(in srgb, var(--accent) 8%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 46% 30% at 72% 102%,
+      color-mix(in srgb, var(--accent) 6%, transparent),
+      transparent 74%
+    );
+}
+
+[data-theme="dark"] .ambient {
+  background:
+    radial-gradient(
+      ellipse 52% 44% at 6% -4%,
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 40% 34% at 98% 10%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 46% 30% at 72% 102%,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 74%
+    );
+}

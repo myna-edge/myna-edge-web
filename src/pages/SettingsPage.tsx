@@ -91,7 +91,7 @@ export function SettingsPage() {
             onChange={(e) => patch("secret", e.target.value)}
             autoComplete="off"
           />
-          <p className="form-hint muted">API 开启鉴权时需要；Webhook 与接入示例共用。</p>
+          <p className="form-hint muted">与 API 的 MYNA_SECRET 相同；开启鉴权后 Webhook 与接入示例共用。</p>
         </div>
 
         <div className="form-actions">

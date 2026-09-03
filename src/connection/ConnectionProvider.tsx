@@ -15,6 +15,7 @@ import {
   writeStoredConnection,
   type ConnectionDraft,
 } from "./storage";
+import { queryClient } from "../query/client";
 
 type ConnectionContextValue = {
   draft: ConnectionDraft;
@@ -51,6 +52,7 @@ export function ConnectionProvider({ children }: { children: ReactNode }) {
       secret: normalized.secret,
     });
     setOverridden(true);
+    queryClient.clear();
   }, []);
 
   const reset = useCallback(() => {
@@ -59,6 +61,7 @@ export function ConnectionProvider({ children }: { children: ReactNode }) {
     setDraft(defaults);
     setEffective(defaults);
     setOverridden(false);
+    queryClient.clear();
   }, []);
 
   const value = useMemo(

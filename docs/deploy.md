@@ -23,8 +23,7 @@ Deploy to Cloudflare 按钮**不支持 Pages**（仅 Workers）；Web 请用本�
 | 变量 | 是否必须 | 说明 |
 |------|----------|------|
 | `VITE_API_BASE` | **必填** | API Worker 地址，如 `https://myna-edge-api.<子域>.workers.dev` |
-| `VITE_MYNA_INGEST_TOKEN` | 可选 | API 启用了 ingest token 时，可预填接入页 |
-| `VITE_MYNA_ADMIN_TOKEN` | 可选 | API 启用了 `MYNA_ADMIN_TOKEN` 时，Webhook 写入需要 |
+| `VITE_MYNA_SECRET` | 可选 | 与 API `MYNA_SECRET` 相同；也可部署后在控制台「设置」页填写 |
 
 5. 保存并部署。之后 push `main` 会自动重新构建。
 
@@ -38,7 +37,7 @@ Deploy to Cloudflare 按钮**不支持 Pages**（仅 Workers）；Web 请用本�
 
 1. [myna-edge-api](https://github.com/myna-edge/myna-edge-api)（Worker + D1）
 2. 本仓库 Pages（填 `VITE_API_BASE`）
-3. [myna-edge-sdk](https://github.com/myna-edge/myna-edge-sdk) 上报到 `https://<api>/api/ingest`
+3. [myna-edge-sdk](https://github.com/myna-edge/myna-edge-sdk) 上报到 API 根地址（SDK 自动请求 `/api/ingest`）
 
 ## 可选：本地 CLI 部署
 

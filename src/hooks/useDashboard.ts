@@ -1,33 +1,15 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchOverview } from "../api";
 import type { DashboardDays } from "../components/dashboard/constants";
+import { queryKeys } from "../query/client";
 
 export function useDashboard(days: DashboardDays) {
-  const [data, setData] = useState<Awaited<ReturnType<typeof fetchOverview>> | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const query = useQuery({
+    queryKey: queryKeys.overview(days),
+    queryFn: () => fetchOverview(days),
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    (async () => {
-      try {
-        const overview = await fetchOverview(days);
-        if (cancelled) return;
-        setData(overview);
-        setError(null);
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "加载失败");
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [days]);
+  const data = query.data;
 
   return {
     stats: data?.stats ?? null,
@@ -40,7 +22,8 @@ export function useDashboard(days: DashboardDays) {
     topIssues: data?.topIssues ?? [],
     newIssueTrend: data?.newIssueTrend ?? [],
     newIssueCount: data?.newIssueCount ?? 0,
-    error,
-    loading,
+    error: query.error ? (query.error instanceof Error ? query.error.message : "加载失败") : null,
+    /** True only when there is no cached data yet. */
+    loading: query.isPending,
   };
 }

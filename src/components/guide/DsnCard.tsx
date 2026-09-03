@@ -66,10 +66,11 @@ export function DsnCard({ dsn }: DsnCardProps) {
       </div>
       <pre className="code-block code-block-dsn">{dsn}</pre>
       <p className="card-note muted">
-        采集地址（POST 到此 URL）· {apiDisplayBase()}
+        API 根地址，填入 SDK 的 <code className="mono">dsn</code>（自动请求{" "}
+        <code className="mono">/api/ingest</code>）· {apiDisplayBase()}
         {health?.ingestAuth
-          ? " · 服务端已启用 MYNA_INGEST_TOKEN，SDK 须传入相同 Token"
-          : " · 本地未启用 Token 时可省略"}
+          ? " · 服务端已启用密钥（MYNA_SECRET），SDK 须传入相同 token"
+          : " · 本地未启用密钥时可省略"}
       </p>
       {error ? <p className="flash-error">{error}</p> : null}
     </section>

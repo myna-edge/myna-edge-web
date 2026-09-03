@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ingestDsn, ingestToken } from "../api";
+import { ingestDsn, apiSecret } from "../api";
 import { CopyBlock } from "../components/guide/CopyBlock";
 import { DsnCard } from "../components/guide/DsnCard";
 import { PageIntro } from "../components/layout/PageIntro";
@@ -31,7 +31,7 @@ const TEST_SNIPPET = `throw new Error("Myna test");`;
 
 export function GuidePage() {
   const dsn = ingestDsn();
-  const token = ingestToken() || undefined;
+  const token = apiSecret() || undefined;
 
   return (
     <div className="page">

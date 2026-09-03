@@ -1,4 +1,4 @@
-export { apiBase, apiDisplayBase, adminToken, ingestDsn, ingestToken } from "./client";
+export { apiBase, apiDisplayBase, apiSecret, ingestDsn } from "./client";
 export * from "./types";
 export * from "./format";
 export * from "./issues";

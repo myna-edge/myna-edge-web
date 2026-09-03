@@ -1,12 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
-import {
-  fetchIssues,
-  type IssueFilters,
-  type IssueStats,
-  type TabStatus,
-} from "../api";
+import { fetchIssues, type TabStatus } from "../api";
 import { ISSUE_TABS, PAGE_SIZE, parseIssuePeriod, parseIssueSort } from "../components/home/constants";
+import { queryKeys } from "../query/client";
 
 export function useIssueList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,13 +19,7 @@ export function useIssueList() {
       : null,
   );
 
-  const [issues, setIssues] = useState<Awaited<ReturnType<typeof fetchIssues>>["issues"]>([]);
-  const [stats, setStats] = useState<IssueStats | null>(null);
-  const [filters, setFilters] = useState<IssueFilters>({ environments: [], releases: [] });
-  const [total, setTotal] = useState(0);
   const [searchDraft, setSearchDraft] = useState(q);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!ISSUE_TABS.some((t) => t.id === status)) {
@@ -40,41 +31,27 @@ export function useIssueList() {
     setSearchDraft(q);
   }, [q]);
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    (async () => {
-      try {
-        const data = await fetchIssues({
-          status: ISSUE_TABS.some((t) => t.id === status) ? status : "open",
-          environment: environment || undefined,
-          release: release || undefined,
-          q: q || undefined,
-          period: period || undefined,
-          sort,
-          order,
-          page,
-          limit: PAGE_SIZE,
-        });
-        if (cancelled) return;
-        setIssues(data.issues);
-        setStats(data.stats);
-        setFilters(data.filters);
-        setTotal(data.total);
-        setError(null);
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "加载失败");
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [status, environment, release, q, period, sort, order, page]);
+  const filters = {
+    status: ISSUE_TABS.some((t) => t.id === status) ? status : "open",
+    environment: environment || undefined,
+    release: release || undefined,
+    q: q || undefined,
+    period: period || undefined,
+    sort,
+    order,
+    page,
+    limit: PAGE_SIZE,
+  };
 
+  const query = useQuery({
+    queryKey: queryKeys.issues(filters),
+    queryFn: () => fetchIssues(filters),
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
+
+  const data = query.data;
+  const total = data?.total ?? 0;
   const totalPages = Math.max(Math.ceil(total / PAGE_SIZE), 1);
 
   useEffect(() => {
@@ -123,15 +100,15 @@ export function useIssueList() {
     order,
     q,
     page,
-    issues,
-    stats,
-    filters,
+    issues: data?.issues ?? [],
+    stats: data?.stats ?? null,
+    filters: data?.filters ?? { environments: [], releases: [] },
     total,
     totalPages,
     searchDraft,
     setSearchDraft,
-    error,
-    loading,
+    error: query.error ? (query.error instanceof Error ? query.error.message : "加载失败") : null,
+    loading: query.isPending,
     patchParams,
     submitSearch,
     resetFilters,

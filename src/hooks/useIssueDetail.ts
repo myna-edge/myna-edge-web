@@ -1,3 +1,4 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -5,52 +6,37 @@ import {
   ignoreIssue,
   reopenIssue,
   resolveIssue,
-  type EventRow,
-  type Issue,
 } from "../api";
 import { extraEntries } from "../components/issue/issueMeta";
 import { hasEnvironmentInfo, hasPageInfo } from "../components/issue/clientMeta";
 import type { DetailTab } from "../components/issue/DetailTabs";
 import { pickDefaultDetailTab } from "../components/issue/DetailTabs";
+import { queryKeys } from "../query/client";
 import { useCopy } from "./useCopy";
 
 export function useIssueDetail(id: number) {
   const navigate = useNavigate();
-  const [issue, setIssue] = useState<Issue | null>(null);
-  const [events, setEvents] = useState<EventRow[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
   const [tab, setTab] = useState<DetailTab>("stack");
   const { copied, onCopy } = useCopy();
 
+  const query = useQuery({
+    queryKey: queryKeys.issue(id),
+    queryFn: () => fetchIssue(id),
+    enabled: Number.isFinite(id),
+  });
+
+  const issue = query.data?.issue ?? null;
+  const events = query.data?.events ?? [];
+
   useEffect(() => {
-    if (!Number.isFinite(id)) {
-      setError("无效的问题编号");
-      setLoading(false);
-      return;
-    }
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-    (async () => {
-      try {
-        const data = await fetchIssue(id);
-        if (cancelled) return;
-        setIssue(data.issue);
-        setEvents(data.events);
-        setSelectedEventId(data.events.find((e) => e.stack)?.id ?? data.events[0]?.id ?? null);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "加载失败");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [id]);
+    if (!events.length) return;
+    setSelectedEventId((prev) => {
+      if (prev != null && events.some((e) => e.id === prev)) return prev;
+      return events.find((e) => e.stack)?.id ?? events[0]?.id ?? null;
+    });
+  }, [events]);
 
   const selectedIndex = useMemo(
     () => events.findIndex((e) => e.id === selectedEventId),
@@ -86,48 +72,54 @@ export function useIssueDetail(id: number) {
     selectEvent(events[selectedIndex - 1].id);
   }, [selectedIndex, events, selectEvent]);
 
-  const onResolve = useCallback(async () => {
-    if (!issue) return;
-    setPending(true);
-    try {
-      await resolveIssue(issue.id);
+  const invalidateRelated = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: ["issues"] });
+    void queryClient.invalidateQueries({ queryKey: ["overview"] });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.issue(id) });
+  }, [queryClient, id]);
+
+  const resolveMutation = useMutation({
+    mutationFn: () => resolveIssue(id),
+    onSuccess: () => {
+      invalidateRelated();
       navigate("/?status=resolved");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "操作失败");
-      setPending(false);
-    }
-  }, [issue, navigate]);
+    },
+  });
 
-  const onIgnore = useCallback(async () => {
-    if (!issue) return;
-    setPending(true);
-    try {
-      await ignoreIssue(issue.id);
+  const ignoreMutation = useMutation({
+    mutationFn: () => ignoreIssue(id),
+    onSuccess: () => {
+      invalidateRelated();
       navigate("/?status=ignored");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "操作失败");
-      setPending(false);
-    }
-  }, [issue, navigate]);
+    },
+  });
 
-  const onReopen = useCallback(async () => {
-    if (!issue) return;
-    setPending(true);
-    try {
-      await reopenIssue(issue.id);
+  const reopenMutation = useMutation({
+    mutationFn: () => reopenIssue(id),
+    onSuccess: () => {
+      invalidateRelated();
       navigate("/?status=open");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "操作失败");
-      setPending(false);
-    }
-  }, [issue, navigate]);
+    },
+  });
+
+  const actionError =
+    resolveMutation.error || ignoreMutation.error || reopenMutation.error;
+  const loadError = !Number.isFinite(id)
+    ? "无效的问题编号"
+    : query.error
+      ? query.error instanceof Error
+        ? query.error.message
+        : "加载失败"
+      : null;
 
   return {
     issue,
     events,
-    error,
-    pending,
-    loading,
+    error:
+      loadError ||
+      (actionError ? (actionError instanceof Error ? actionError.message : "操作失败") : null),
+    pending: resolveMutation.isPending || ignoreMutation.isPending || reopenMutation.isPending,
+    loading: query.isPending,
     selectedEventId,
     selectedIndex,
     selectedEvent,
@@ -143,8 +135,8 @@ export function useIssueDetail(id: number) {
     selectEvent,
     selectOlder,
     selectNewer,
-    onResolve,
-    onIgnore,
-    onReopen,
+    onResolve: () => resolveMutation.mutate(),
+    onIgnore: () => ignoreMutation.mutate(),
+    onReopen: () => reopenMutation.mutate(),
   };
 }
