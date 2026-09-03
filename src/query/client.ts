@@ -21,4 +21,5 @@ export const queryKeys = {
   overview: (days: number) => ["overview", apiScope(), days] as const,
   issues: (filters: Record<string, unknown>) => ["issues", apiScope(), filters] as const,
   issue: (id: number) => ["issue", apiScope(), id] as const,
+  webhook: () => ["webhook", apiScope()] as const,
 };

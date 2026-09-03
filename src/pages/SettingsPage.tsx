@@ -3,6 +3,7 @@ import { fetchHealth } from "../api";
 import { useConnection } from "../connection/ConnectionProvider";
 import { connectionDefaults, type ConnectionDraft } from "../connection/storage";
 import { PageIntro } from "../components/layout/PageIntro";
+import { ClearableInput } from "../components/ui/ClearableInput";
 import { toast } from "../toast";
 
 export function SettingsPage() {
@@ -61,14 +62,13 @@ export function SettingsPage() {
           <label className="form-label" htmlFor="conn-api-base">
             API 地址
           </label>
-          <input
+          <ClearableInput
             id="conn-api-base"
-            className="input input-block"
             type="text"
             inputMode="url"
             placeholder="https://"
             value={form.apiBase}
-            onChange={(e) => patch("apiBase", e.target.value)}
+            onChange={(value) => patch("apiBase", value)}
             autoComplete="off"
             spellCheck={false}
           />
@@ -83,12 +83,11 @@ export function SettingsPage() {
           <label className="form-label" htmlFor="conn-secret">
             密钥
           </label>
-          <input
+          <ClearableInput
             id="conn-secret"
-            className="input input-block"
             type="password"
             value={form.secret}
-            onChange={(e) => patch("secret", e.target.value)}
+            onChange={(value) => patch("secret", value)}
             autoComplete="off"
           />
           <p className="form-hint muted">与 API 的 MYNA_SECRET 相同；开启鉴权后 Webhook 与接入示例共用。</p>

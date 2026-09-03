@@ -6,12 +6,10 @@ export type HealthResponse = {
   webhook: boolean;
 };
 
-export type WebhookFormat = "auto" | "feishu" | "wecom" | "slack" | "generic";
-
 export type WebhookConfig = {
   enabled: boolean;
   url: string;
-  format: WebhookFormat;
+  signSecret: string;
   consoleUrl: string;
   notifyNew: boolean;
   notifyReopened: boolean;

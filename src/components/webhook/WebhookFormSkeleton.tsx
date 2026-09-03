@@ -5,7 +5,6 @@ export function WebhookFormSkeleton() {
     <SkeletonBlock className="card webhook-form" label="加载告警配置">
       <SkeletonCheck width="10rem" />
       <SkeletonField hint />
-      <SkeletonField />
       <SkeletonField hint />
       <div className="form-fieldset">
         <Skeleton className="skeleton-label" />

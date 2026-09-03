@@ -1,14 +1,10 @@
 import type { FormEvent } from "react";
-import type { WebhookConfig, WebhookFormat } from "../../api";
-import { Select } from "../ui/Select";
+import type { WebhookConfig } from "../../api";
+import { ClearableInput } from "../ui/ClearableInput";
 
-const FORMAT_OPTIONS: { value: WebhookFormat; label: string }[] = [
-  { value: "auto", label: "自动识别" },
-  { value: "feishu", label: "飞书 / Lark" },
-  { value: "wecom", label: "企业微信" },
-  { value: "slack", label: "Slack" },
-  { value: "generic", label: "通用 JSON" },
-];
+function isDingTalkUrl(url: string): boolean {
+  return url.toLowerCase().includes("oapi.dingtalk.com");
+}
 
 type Props = {
   config: WebhookConfig;
@@ -29,6 +25,8 @@ export function WebhookForm({
   onSubmit,
   onTest,
 }: Props) {
+  const dingTalk = isDingTalkUrl(config.url);
+
   return (
     <form className="card webhook-form" onSubmit={onSubmit}>
       <label className="form-check">
@@ -44,6 +42,10 @@ export function WebhookForm({
         <label className="form-label" htmlFor="webhook-url">
           Webhook URL
         </label>
+        <p className="form-hint muted">
+          粘贴飞书、企业微信或钉钉机器人地址；其他地址按通用 JSON 发送。钉钉若选「自定义关键词」，请填
+          Myna（消息里已包含）。
+        </p>
         <input
           id="webhook-url"
           className="input input-block"
@@ -52,29 +54,33 @@ export function WebhookForm({
           value={config.url}
           onChange={(e) => onPatch("url", e.target.value)}
         />
-        <p className="form-hint muted">
-          支持飞书、企业微信、Slack 机器人地址，或任意可接收 POST 的 URL。
-        </p>
       </div>
 
-      <div className="form-field">
-        <label className="form-label" htmlFor="webhook-format">
-          消息格式
-        </label>
-        <Select
-          id="webhook-format"
-          block
-          value={config.format}
-          aria-label="消息格式"
-          options={FORMAT_OPTIONS}
-          onChange={(next) => onPatch("format", next as WebhookFormat)}
-        />
-      </div>
+      {dingTalk ? (
+        <div className="form-field">
+          <label className="form-label" htmlFor="webhook-sign-secret">
+            钉钉加签密钥
+          </label>
+          <p className="form-hint muted">
+            安全设置选「加签」时填写 SEC 开头的密钥；用关键词则可留空。
+          </p>
+          <ClearableInput
+            id="webhook-sign-secret"
+            type="password"
+            value={config.signSecret}
+            onChange={(value) => onPatch("signSecret", value)}
+            autoComplete="off"
+            placeholder="SEC..."
+            spellCheck={false}
+          />
+        </div>
+      ) : null}
 
       <div className="form-field">
         <label className="form-label" htmlFor="webhook-console">
           控制台地址
         </label>
+        <p className="form-hint muted">用于在通知里生成问题详情链接。</p>
         <input
           id="webhook-console"
           className="input input-block"
@@ -83,7 +89,6 @@ export function WebhookForm({
           value={config.consoleUrl}
           onChange={(e) => onPatch("consoleUrl", e.target.value)}
         />
-        <p className="form-hint muted">用于在通知里生成问题详情链接。</p>
       </div>
 
       <fieldset className="form-fieldset">
