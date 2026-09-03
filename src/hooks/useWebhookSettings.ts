@@ -71,18 +71,7 @@ export function useWebhookSettings() {
   });
 
   const testMutation = useMutation({
-    mutationFn: async (config: WebhookConfig) => {
-      if (config.url.trim()) {
-        const saved = await saveWebhookConfig(config);
-        const next = withConsoleFallback(saved);
-        setDraft(next);
-        setDirty(false);
-        queryClient.setQueryData<WebhookQueryData>(queryKeys.webhook(), (prev) =>
-          prev ? { ...prev, config: next } : { adminAuth: false, config: next },
-        );
-      }
-      await testWebhookConfig();
-    },
+    mutationFn: (config: WebhookConfig) => testWebhookConfig(config),
     onSuccess: () => {
       toast.success("测试消息已发送");
     },

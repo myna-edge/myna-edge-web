@@ -46,13 +46,14 @@ export function WebhookForm({
           粘贴飞书、企业微信或钉钉机器人地址；其他地址按通用 JSON 发送。钉钉若选「自定义关键词」，请填
           Myna（消息里已包含）。
         </p>
-        <input
+        <ClearableInput
           id="webhook-url"
-          className="input input-block"
           type="url"
           placeholder="https://..."
           value={config.url}
-          onChange={(e) => onPatch("url", e.target.value)}
+          onChange={(value) => onPatch("url", value)}
+          autoComplete="off"
+          spellCheck={false}
         />
       </div>
 
@@ -81,13 +82,14 @@ export function WebhookForm({
           控制台地址
         </label>
         <p className="form-hint muted">用于在通知里生成问题详情链接。</p>
-        <input
+        <ClearableInput
           id="webhook-console"
-          className="input input-block"
           type="url"
           placeholder={typeof window !== "undefined" ? window.location.origin : "https://..."}
           value={config.consoleUrl}
-          onChange={(e) => onPatch("consoleUrl", e.target.value)}
+          onChange={(value) => onPatch("consoleUrl", value)}
+          autoComplete="off"
+          spellCheck={false}
         />
       </div>
 

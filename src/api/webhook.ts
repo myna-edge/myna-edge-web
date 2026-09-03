@@ -25,10 +25,14 @@ export async function saveWebhookConfig(config: WebhookConfig): Promise<WebhookC
   return body.config;
 }
 
-export async function testWebhookConfig(): Promise<void> {
+export async function testWebhookConfig(config?: WebhookConfig): Promise<void> {
   const res = await fetch(`${apiBase()}/api/settings/webhook/test`, {
     method: "POST",
-    headers: adminHeaders(),
+    headers: {
+      "Content-Type": "application/json",
+      ...adminHeaders(),
+    },
+    body: config ? JSON.stringify(config) : undefined,
   });
   if (!res.ok) throw new Error(await readError(res));
 }
