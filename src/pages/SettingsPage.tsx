@@ -3,15 +3,13 @@ import { fetchHealth } from "../api";
 import { useConnection } from "../connection/ConnectionProvider";
 import { connectionDefaults, type ConnectionDraft } from "../connection/storage";
 import { PageIntro } from "../components/layout/PageIntro";
-
-type Status = { tone: "ok" | "err"; text: string } | null;
+import { toast } from "../toast";
 
 export function SettingsPage() {
   const { draft, overridden, save, reset } = useConnection();
   const [form, setForm] = useState<ConnectionDraft>(draft);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
-  const [status, setStatus] = useState<Status>(null);
 
   useEffect(() => {
     setForm(draft);
@@ -19,21 +17,19 @@ export function SettingsPage() {
 
   function patch<K extends keyof ConnectionDraft>(key: K, value: ConnectionDraft[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
-    setStatus(null);
   }
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     setSaving(true);
-    setStatus(null);
     try {
       if (import.meta.env.PROD && !form.apiBase.trim() && !connectionDefaults().apiBase) {
         throw new Error("生产环境必须填写 API 地址");
       }
       save(form);
-      setStatus({ tone: "ok", text: "已保存" });
+      toast.success("已保存");
     } catch (err) {
-      setStatus({ tone: "err", text: err instanceof Error ? err.message : "保存失败" });
+      toast.error(err instanceof Error ? err.message : "保存失败");
     } finally {
       setSaving(false);
     }
@@ -41,17 +37,11 @@ export function SettingsPage() {
 
   async function onTest() {
     setTesting(true);
-    setStatus(null);
     try {
-      const health = await fetchHealth(form.apiBase);
-      const authHint =
-        health.adminAuth || health.ingestAuth ? "，已开启鉴权" : "";
-      setStatus({ tone: "ok", text: `可达 · ${health.storage}${authHint}` });
-    } catch (err) {
-      setStatus({
-        tone: "err",
-        text: err instanceof Error ? err.message : "无法连接",
-      });
+      await fetchHealth(form.apiBase);
+      toast.success("连接成功");
+    } catch {
+      toast.error("连接失败");
     } finally {
       setTesting(false);
     }
@@ -59,7 +49,7 @@ export function SettingsPage() {
 
   function onReset() {
     reset();
-    setStatus({ tone: "ok", text: "已恢复默认" });
+    toast.success("已恢复默认");
   }
 
   return (
@@ -104,23 +94,16 @@ export function SettingsPage() {
           <p className="form-hint muted">API 开启鉴权时需要；Webhook 与接入示例共用。</p>
         </div>
 
-        <div className="form-footer">
-          <div className="form-actions">
-            <button type="submit" className="btn btn-accent" disabled={saving}>
-              {saving ? "保存中…" : "保存"}
-            </button>
-            <button type="button" className="btn btn-ghost" disabled={testing} onClick={onTest}>
-              {testing ? "测试中…" : "测试连接"}
-            </button>
-            <button type="button" className="btn btn-ghost" disabled={!overridden} onClick={onReset}>
-              恢复默认
-            </button>
-          </div>
-          {status ? (
-            <p className={`form-status ${status.tone === "ok" ? "is-ok" : "is-err"}`} role="status">
-              {status.text}
-            </p>
-          ) : null}
+        <div className="form-actions">
+          <button type="submit" className="btn btn-accent" disabled={saving}>
+            {saving ? "保存中…" : "保存"}
+          </button>
+          <button type="button" className="btn btn-ghost" disabled={testing} onClick={onTest}>
+            {testing ? "测试中…" : "测试连接"}
+          </button>
+          <button type="button" className="btn btn-ghost" disabled={!overridden} onClick={onReset}>
+            恢复默认
+          </button>
         </div>
       </form>
     </div>

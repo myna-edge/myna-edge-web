@@ -5,6 +5,17 @@
 
 @media (max-width: 767px) {
   /* Nav */
+  .app-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .shell {
+    padding-top: calc(var(--nav-h) + max(0px, env(safe-area-inset-top)));
+  }
+
   .app-bar-desktop {
     display: none;
   }

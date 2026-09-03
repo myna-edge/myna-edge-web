@@ -1,7 +1,6 @@
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMobileNav } from "./MobileNavContext";
-import { ThemeToggle } from "./ThemeToggle";
 
 export function MobileHeader() {
   const { open, panelId, toggleNav } = useMobileNav();
@@ -14,19 +13,16 @@ export function MobileHeader() {
             <img src="/myna.png" alt="" className="app-bar-logo" width={28} height={28} />
             <span className="app-bar-name">Myna</span>
           </Link>
-          <div className="app-bar-mobile-actions">
-            <ThemeToggle />
-            <button
-              type="button"
-              className="menu-btn"
-              aria-label={open ? "关闭菜单" : "打开菜单"}
-              aria-expanded={open}
-              aria-controls={panelId}
-              onClick={toggleNav}
-            >
-              {open ? <X size={20} strokeWidth={2} aria-hidden /> : <Menu size={20} strokeWidth={2} aria-hidden />}
-            </button>
-          </div>
+          <button
+            type="button"
+            className="menu-btn"
+            aria-label={open ? "关闭菜单" : "打开菜单"}
+            aria-expanded={open}
+            aria-controls={panelId}
+            onClick={toggleNav}
+          >
+            {open ? <X size={20} strokeWidth={2} aria-hidden /> : <Menu size={20} strokeWidth={2} aria-hidden />}
+          </button>
         </div>
       </div>
     </div>

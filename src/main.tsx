@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { App } from "./App";
 import { ConnectionProvider } from "./connection/ConnectionProvider";
 import { ThemeProvider } from "./theme/ThemeProvider";
+import { ToastViewport } from "./toast";
 import "./styles/index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -12,6 +13,7 @@ createRoot(document.getElementById("root")!).render(
       <ConnectionProvider>
         <BrowserRouter>
           <App />
+          <ToastViewport />
         </BrowserRouter>
       </ConnectionProvider>
     </ThemeProvider>
