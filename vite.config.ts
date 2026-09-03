@@ -13,7 +13,7 @@ export default defineConfig({
     },
   },
   server: {
-    host: "127.0.0.1",
+    host: true,
     port: 43127,
     strictPort: true,
     proxy: {
@@ -24,7 +24,7 @@ export default defineConfig({
     },
   },
   preview: {
-    host: "127.0.0.1",
+    host: true,
     port: 43127,
     strictPort: true,
     proxy: {

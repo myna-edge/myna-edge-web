@@ -3,4 +3,5 @@ export const NAV_ITEMS = [
   { to: "/issues", label: "问题" },
   { to: "/webhook", label: "告警" },
   { to: "/guide", label: "接入" },
+  { to: "/settings", label: "设置" },
 ] as const;

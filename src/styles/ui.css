@@ -146,6 +146,26 @@
   gap: 0.625rem;
 }
 
+.form-footer {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.form-status {
+  margin: 0;
+  min-height: 1.25em;
+  font-size: var(--text-sm);
+  line-height: var(--leading);
+}
+
+.form-status.is-ok {
+  color: var(--ok);
+}
+
+.form-status.is-err {
+  color: var(--danger);
+}
+
 /* ── Buttons ── */
 
 .btn {

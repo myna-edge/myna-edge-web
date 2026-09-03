@@ -1,8 +1,8 @@
 import { adminHeaders, apiBase, readError } from "./client";
 import type { HealthResponse, WebhookConfig } from "./types";
 
-export async function fetchHealth(): Promise<HealthResponse> {
-  const res = await fetch(`${apiBase()}/api/health`);
+export async function fetchHealth(overrideBase?: string): Promise<HealthResponse> {
+  const res = await fetch(`${apiBase(overrideBase)}/api/health`);
   if (!res.ok) throw new Error(`GET /api/health → ${res.status}`);
   return res.json();
 }

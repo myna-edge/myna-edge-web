@@ -108,9 +108,7 @@ export function WebhookForm({
 
       {adminAuth ? (
         <p className="card-note muted">
-          API 已启用 <code className="mono">MYNA_ADMIN_TOKEN</code>，保存与测试需在
-          Cloudflare Pages 环境变量（或本地 <code className="mono">.env</code>）配置{" "}
-          <code className="mono">VITE_MYNA_ADMIN_TOKEN</code>。
+          API 已启用鉴权，保存与测试需在「设置」页填写密钥。
         </p>
       ) : null}
 

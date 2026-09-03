@@ -1,6 +1,10 @@
-/* ── Mobile (secondary; primary target is 1080px desktop / portrait) ── */
+/* ── Mobile tier: <768px ─────────────────────────────────────
+   Desktop (≥768) is the default stylesheet.
+   Do not add other max-width layout breakpoints elsewhere.
+   ─────────────────────────────────────────────────────────── */
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
+  /* Nav */
   .app-bar-desktop {
     display: none;
   }
@@ -9,6 +13,17 @@
     display: block;
   }
 
+  /* Dashboard */
+  .overview-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-grid,
+  .dashboard-trends {
+    grid-template-columns: 1fr;
+  }
+
+  /* Issues list / filters */
   .issue-filters {
     padding: 0.75rem;
   }
@@ -55,6 +70,13 @@
     text-align: left;
   }
 
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  /* Issue detail */
   .detail-top {
     flex-direction: column;
     align-items: stretch;
@@ -69,25 +91,54 @@
     text-align: center;
   }
 
-  .pagination {
+  .issue-meta-bar {
     flex-direction: column;
     align-items: stretch;
-    text-align: center;
   }
 
+  .issue-meta-events {
+    width: 100%;
+  }
+
+  .issue-meta-events .issue-event-select {
+    max-width: none;
+    flex: 1;
+  }
+
+  .issue-meta-actions {
+    margin-left: 0;
+  }
+
+  .issue-meta-actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .issue-toolbar {
+    padding: 0.5rem 0.625rem;
+  }
+
+  .issue-toolbar-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    overscroll-behavior-x: contain;
+  }
+
+  .issue-toolbar-tab {
+    white-space: nowrap;
+  }
+
+  .extra-item,
+  .detail-meta > div {
+    grid-template-columns: 1fr;
+    gap: 0.125rem;
+  }
+
+  /* Shared */
   .card {
     padding: 0.875rem 1rem;
   }
 
   .card-head {
     flex-wrap: wrap;
-  }
-}
-
-@media (max-width: 520px) {
-  .extra-item,
-  .detail-meta > div {
-    grid-template-columns: 1fr;
-    gap: 0.125rem;
   }
 }

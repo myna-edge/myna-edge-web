@@ -1,6 +1,8 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { AppNav } from "./AppNav";
 import { MobileHeader } from "./MobileHeader";
+import { MobileNavDrawer } from "./MobileNavDrawer";
+import { MobileNavProvider } from "./MobileNavContext";
 import { ScrollToTop } from "./ScrollToTop";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -18,27 +20,28 @@ export function AppShell() {
   const isIssueDetail = /^\/issues\/\d+/.test(pathname);
 
   return (
-    <div className={`shell${isIssueDetail ? " shell--issue" : ""}`}>
-      <header className="app-bar">
-        <div className="shell-inner">
-          <div className="app-bar-desktop">
-            <div className="app-bar-side app-bar-side-start">
-              <BrandLink />
-            </div>
-            <div className="app-bar-center">
-              <AppNav />
-            </div>
-            <div className="app-bar-side app-bar-side-end">
-              <ThemeToggle />
+    <MobileNavProvider>
+      <div className={`shell${isIssueDetail ? " shell--issue" : ""}`}>
+        <header className="app-bar">
+          <div className="shell-inner">
+            <div className="app-bar-desktop">
+              <div className="app-bar-start">
+                <BrandLink />
+                <AppNav />
+              </div>
+              <div className="app-bar-end">
+                <ThemeToggle />
+              </div>
             </div>
           </div>
-        </div>
-        <MobileHeader />
-      </header>
-      <main className={`shell-main${isIssueDetail ? " shell-main--issue" : ""}`}>
-        <Outlet />
-      </main>
-      <ScrollToTop />
-    </div>
+          <MobileHeader />
+        </header>
+        <main className={`shell-main${isIssueDetail ? " shell-main--issue" : ""}`}>
+          <Outlet />
+        </main>
+        <ScrollToTop />
+        <MobileNavDrawer />
+      </div>
+    </MobileNavProvider>
   );
 }

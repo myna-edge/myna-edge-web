@@ -404,26 +404,6 @@
   pointer-events: none;
 }
 
-@media (max-width: 900px) {
-  .overview-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-trends {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .overview-stats {
-    grid-template-columns: 1fr;
-  }
-}
-
 .extra-grid {
   display: grid;
   gap: 0;
@@ -564,10 +544,4 @@
 
 .issue-results {
   min-height: 12rem;
-}
-
-@media (max-width: 900px) {
-  .issue-filters-advanced {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }

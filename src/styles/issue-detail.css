@@ -351,7 +351,7 @@
   gap: 0.875rem;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 768px) {
   .client-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.875rem 1rem;
@@ -549,42 +549,4 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-}
-
-@media (max-width: 767px) {
-  .issue-meta-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .issue-meta-events {
-    width: 100%;
-  }
-
-  .issue-meta-events .issue-event-select {
-    max-width: none;
-    flex: 1;
-  }
-
-  .issue-meta-actions {
-    margin-left: 0;
-  }
-
-  .issue-meta-actions .btn {
-    flex: 1 1 auto;
-  }
-
-  .issue-toolbar {
-    padding: 0.5rem 0.625rem;
-  }
-
-  .issue-toolbar-tabs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    overscroll-behavior-x: contain;
-  }
-
-  .issue-toolbar-tab {
-    white-space: nowrap;
-  }
 }

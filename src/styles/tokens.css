@@ -33,6 +33,7 @@
   --shell-width: 1080px;
   --shell-width-issue: 1280px;
   --shell-pad-x: 1.5rem;
+  /* Responsive: 2 tiers only — Mobile <768px, Desktop ≥768px (see mobile.css) */
   --space-page: 1.25rem;
   --space-section: 1.25rem;
   --pad-card: 1.25rem 1.5rem;
