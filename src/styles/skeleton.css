@@ -151,6 +151,11 @@
   width: min(100%, 36rem);
 }
 
+.skeleton-issue-lines {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .skeleton-workspace {
   display: grid;
   gap: 1rem;

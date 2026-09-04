@@ -8,7 +8,7 @@ import {
   resolveIssue,
 } from "../api";
 import { extraEntries } from "../components/issue/issueMeta";
-import { hasEnvironmentInfo, hasPageInfo } from "../components/issue/clientMeta";
+import { hasClientSnapshot } from "../components/issue/clientMeta";
 import type { DetailTab } from "../components/issue/DetailTabs";
 import { pickDefaultDetailTab } from "../components/issue/DetailTabs";
 import { queryKeys } from "../query/client";
@@ -45,9 +45,8 @@ export function useIssueDetail(id: number) {
 
   const selectedEvent = selectedIndex >= 0 ? events[selectedIndex] : null;
   const displayStack = selectedEvent?.stack ?? null;
-  const hasPage = hasPageInfo(selectedEvent);
-  const hasEnvironment = hasEnvironmentInfo(selectedEvent);
-  const hasContext = extraEntries(selectedEvent?.extra).length > 0;
+  const hasClient = hasClientSnapshot(selectedEvent);
+  const hasExtra = extraEntries(selectedEvent?.extra).length > 0;
 
   const userCount = useMemo(
     () => new Set(events.map((e) => e.user_id).filter(Boolean)).size,
@@ -55,8 +54,8 @@ export function useIssueDetail(id: number) {
   );
 
   useEffect(() => {
-    setTab(pickDefaultDetailTab(displayStack, hasPage, hasEnvironment, hasContext));
-  }, [selectedEventId, displayStack, hasPage, hasEnvironment, hasContext]);
+    setTab(pickDefaultDetailTab(displayStack, hasClient, hasExtra));
+  }, [selectedEventId, displayStack, hasClient, hasExtra]);
 
   const selectEvent = useCallback((eventId: number) => {
     setSelectedEventId(eventId);
@@ -124,9 +123,8 @@ export function useIssueDetail(id: number) {
     selectedIndex,
     selectedEvent,
     displayStack,
-    hasPage,
-    hasEnvironment,
-    hasContext,
+    hasClient,
+    hasExtra,
     userCount,
     tab,
     setTab,

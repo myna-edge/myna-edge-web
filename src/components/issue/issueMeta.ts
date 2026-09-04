@@ -1,6 +1,5 @@
 import type { EventRow, Issue } from "../../api";
 import { formatAbsolute, formatRelativeTime } from "../../api";
-import { browserLabel } from "./clientMeta";
 
 export type MetaRow = {
   label: string;
@@ -9,8 +8,6 @@ export type MetaRow = {
   href?: string;
   copy?: { key: string; text: string };
 };
-
-export type Tag = { key: string; value: string };
 
 export function extraEntries(extra: Record<string, unknown> | null | undefined) {
   if (!extra) return [];
@@ -26,20 +23,6 @@ export function formatExtraValue(value: unknown): string {
   } catch {
     return String(value);
   }
-}
-
-export function eventTags(event: EventRow): Tag[] {
-  const tags: Tag[] = [];
-  if (event.environment) tags.push({ key: "environment", value: event.environment });
-  if (event.release) tags.push({ key: "release", value: event.release });
-  if (event.user_id) tags.push({ key: "user", value: event.user_id });
-  const browser = browserLabel(event);
-  if (browser) tags.push({ key: "browser", value: browser });
-  const ip = event.client_ip ?? event.client?.request?.ip;
-  if (ip) tags.push({ key: "ip", value: ip });
-  if (event.client?.os?.platform) tags.push({ key: "os", value: event.client.os.platform });
-  if (event.url) tags.push({ key: "url", value: event.url });
-  return tags;
 }
 
 export function occurrenceRows(event: EventRow): MetaRow[] {

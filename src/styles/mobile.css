@@ -93,39 +93,56 @@
     align-items: stretch;
   }
 
-  .issue-actions {
+  .issue-sheet {
+    --sheet-pad-x: 1rem;
+  }
+
+  .issue-topbar-actions {
     width: 100%;
   }
 
-  .issue-actions .btn {
-    flex: 1;
+  .issue-topbar-actions .btn {
+    flex: 1 1 auto;
     text-align: center;
   }
 
-  .issue-meta-bar {
-    flex-direction: column;
-    align-items: stretch;
+  .issue-strip-readout {
+    flex-basis: 100%;
+    order: 3;
   }
 
-  .issue-meta-events {
-    width: 100%;
+  .client-section .detail-meta > div {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
   }
 
-  .issue-meta-events .issue-event-select {
-    max-width: none;
-    flex: 1;
+  .client-storage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
   }
 
-  .issue-meta-actions {
-    margin-left: 0;
+  .client-storage-rail {
+    position: static;
+    flex-direction: row;
+    gap: 0.25rem;
+    padding: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
   }
 
-  .issue-meta-actions .btn {
-    flex: 1 1 auto;
+  .client-storage-rail::-webkit-scrollbar {
+    display: none;
   }
 
-  .issue-toolbar {
-    padding: 0.5rem 0.625rem;
+  .client-storage-rail-item {
+    flex: 0 0 auto;
+    border-left: none;
+    border-radius: calc(var(--radius) - 2px);
+    white-space: nowrap;
+  }
+
+  .client-storage-rail-item.is-active {
+    border-left-color: transparent;
   }
 
   .issue-toolbar-tabs {

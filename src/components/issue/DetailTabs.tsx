@@ -2,46 +2,42 @@ import { StackTraceView } from "./StackTraceView";
 import { ClientPanel } from "./ClientPanel";
 import type { EventRow } from "../../api";
 import { extraEntries, formatExtraValue, occurrenceRows } from "./issueMeta";
-import { environmentSections, pageSections } from "./clientMeta";
+import { clientSections } from "./clientMeta";
 import { MetaTable } from "./MetaTable";
 
-export type DetailTab = "stack" | "page" | "environment" | "context";
+/** Primary detail tabs — stack / client snapshot / extra payload. */
+export type DetailTab = "stack" | "client" | "extra";
 
 type TabDef = { id: DetailTab; label: string };
 
 export function visibleDetailTabs(
   displayStack: string | null,
-  hasPage: boolean,
-  hasEnvironment: boolean,
-  hasContext: boolean,
+  hasClient: boolean,
+  hasExtra: boolean,
 ): TabDef[] {
   const tabs: TabDef[] = [];
   if (displayStack) tabs.push({ id: "stack", label: "堆栈" });
-  if (hasPage) tabs.push({ id: "page", label: "页面" });
-  if (hasEnvironment) tabs.push({ id: "environment", label: "环境" });
-  if (hasContext) tabs.push({ id: "context", label: "上下文" });
+  if (hasClient) tabs.push({ id: "client", label: "客户端" });
+  if (hasExtra) tabs.push({ id: "extra", label: "附加数据" });
   return tabs;
 }
 
 export function pickDefaultDetailTab(
   displayStack: string | null,
-  hasPage: boolean,
-  hasEnvironment: boolean,
-  hasContext: boolean,
+  hasClient: boolean,
+  hasExtra: boolean,
 ): DetailTab {
   if (displayStack) return "stack";
-  if (hasPage) return "page";
-  if (hasEnvironment) return "environment";
-  if (hasContext) return "context";
+  if (hasClient) return "client";
+  if (hasExtra) return "extra";
   return "stack";
 }
 
 type Props = {
   tab: DetailTab;
   displayStack: string | null;
-  hasPage: boolean;
-  hasEnvironment: boolean;
-  hasContext: boolean;
+  hasClient: boolean;
+  hasExtra: boolean;
   selectedEvent: EventRow | null;
   copied: string | null;
   onCopy: (label: string, text: string) => void;
@@ -50,14 +46,13 @@ type Props = {
 export function DetailTabPanel({
   tab,
   displayStack,
-  hasPage,
-  hasEnvironment,
-  hasContext,
+  hasClient,
+  hasExtra,
   selectedEvent,
   copied,
   onCopy,
 }: Props) {
-  const tabs = visibleDetailTabs(displayStack, hasPage, hasEnvironment, hasContext);
+  const tabs = visibleDetailTabs(displayStack, hasClient, hasExtra);
 
   if (!selectedEvent) {
     return (
@@ -85,25 +80,16 @@ export function DetailTabPanel({
         />
       ) : null}
 
-      {tab === "page" && hasPage ? (
+      {tab === "client" && hasClient ? (
         <ClientPanel
-          sections={pageSections(selectedEvent)}
-          emptyText="本条事件没有页面信息。"
+          sections={clientSections(selectedEvent)}
+          emptyText="本条事件没有客户端信息。"
           copied={copied}
           onCopy={onCopy}
         />
       ) : null}
 
-      {tab === "environment" && hasEnvironment ? (
-        <ClientPanel
-          sections={environmentSections(selectedEvent)}
-          emptyText="本条事件没有环境信息。"
-          copied={copied}
-          onCopy={onCopy}
-        />
-      ) : null}
-
-      {tab === "context" && hasContext ? (
+      {tab === "extra" && hasExtra ? (
         <section className="detail-section">
           <div className="detail-section-head">
             <h2>附加数据</h2>
@@ -128,4 +114,3 @@ export function DetailTabPanel({
     </div>
   );
 }
-

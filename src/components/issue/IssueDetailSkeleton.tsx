@@ -6,18 +6,19 @@ export function IssueDetailSkeleton() {
       <span className="sr-only">加载问题详情</span>
       <Skeleton className="skeleton-line-sm" style={{ width: "8rem" }} />
 
-      <div className="skeleton-workspace">
-        <div className="skeleton-issue-header">
+      <div className="issue-sheet">
+        <div className="skeleton-issue-lines issue-header">
           <Skeleton className="skeleton-issue-title" />
           <Skeleton className="skeleton-line-sm" style={{ width: "55%" }} />
           <Skeleton className="skeleton-line-sm" style={{ width: "40%" }} />
         </div>
-        <div className="skeleton-toolbar">
-          <Skeleton className="skeleton-line-sm" style={{ width: "10rem" }} />
-          <Skeleton className="skeleton-line-sm" style={{ width: "14rem" }} />
+
+        <div className="issue-strip">
+          <Skeleton className="skeleton-line-sm" style={{ width: "100%" }} />
         </div>
-        <div className="skeleton-workspace-body">
-          <Skeleton className="skeleton-control" style={{ height: "8rem" }} />
+        <div className="issue-sheet-body">
+          <Skeleton className="skeleton-line-sm" style={{ width: "14rem", marginBottom: "0.75rem" }} />
+          <Skeleton className="skeleton-control" style={{ height: "10rem" }} />
         </div>
       </div>
     </div>

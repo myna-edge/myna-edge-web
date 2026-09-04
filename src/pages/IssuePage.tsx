@@ -1,7 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { DetailTabPanel } from "../components/issue/DetailTabs";
+import { IssueActions } from "../components/issue/IssueActions";
+import { IssueEventStrip } from "../components/issue/IssueEventStrip";
 import { IssueHeader } from "../components/issue/IssueHeader";
-import { IssueMetaBar } from "../components/issue/IssueMetaBar";
 import { IssueDetailSkeleton } from "../components/issue/IssueDetailSkeleton";
 import { IssueToolbar } from "../components/issue/IssueToolbar";
 import { IssueBreadcrumb } from "../components/layout/PageIntro";
@@ -16,13 +17,11 @@ export function IssuePage() {
     error,
     pending,
     loading,
-    selectedEventId,
     selectedIndex,
     selectedEvent,
     displayStack,
-    hasPage,
-    hasEnvironment,
-    hasContext,
+    hasClient,
+    hasExtra,
     userCount,
     tab,
     setTab,
@@ -53,52 +52,54 @@ export function IssuePage() {
 
   if (!issue) return null;
 
-  const actionProps = {
-    issue,
-    pending,
-    error,
-    onResolve,
-    onIgnore,
-    onReopen,
-  };
-
   return (
     <div className="issue-detail">
-      <IssueBreadcrumb id={issue.id} />
-
-      <div className="detail-workspace">
-        <div className="issue-hero">
-          <IssueHeader issue={issue} selectedEvent={selectedEvent} />
-          <IssueMetaBar
-            userCount={userCount}
-            events={events}
-            selectedIndex={selectedIndex}
-            selectedEvent={selectedEvent}
-            selectedEventId={selectedEventId}
-            copied={copied}
-            onCopy={onCopy}
-            onSelectEvent={selectEvent}
-            onOlder={selectOlder}
-            onNewer={selectNewer}
-            {...actionProps}
+      <div className="issue-topbar">
+        <IssueBreadcrumb id={issue.id} />
+        <div className="issue-topbar-actions">
+          <IssueActions
+            issue={issue}
+            pending={pending}
+            error={error}
+            inline
+            onResolve={onResolve}
+            onIgnore={onIgnore}
+            onReopen={onReopen}
           />
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            onClick={() => onCopy("fingerprint", issue.fingerprint)}
+          >
+            {copied === "fingerprint" ? "已复制" : "指纹"}
+          </button>
         </div>
+      </div>
+
+      <div className="issue-sheet">
+        <IssueHeader issue={issue} selectedEvent={selectedEvent} userCount={userCount} />
+
+        <IssueEventStrip
+          events={events}
+          selectedIndex={selectedIndex}
+          onSelectEvent={selectEvent}
+          onOlder={selectOlder}
+          onNewer={selectNewer}
+        />
 
         <IssueToolbar
           tab={tab}
           displayStack={displayStack}
-          hasPage={hasPage}
-          hasEnvironment={hasEnvironment}
-          hasContext={hasContext}
+          hasClient={hasClient}
+          hasExtra={hasExtra}
           onTabChange={setTab}
         />
 
         <DetailTabPanel
           tab={tab}
           displayStack={displayStack}
-          hasPage={hasPage}
-          hasEnvironment={hasEnvironment}
-          hasContext={hasContext}
+          hasClient={hasClient}
+          hasExtra={hasExtra}
           selectedEvent={selectedEvent}
           copied={copied}
           onCopy={onCopy}

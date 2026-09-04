@@ -10,6 +10,8 @@ type SelectProps = {
   value: string;
   options: SelectOption[];
   onChange: (value: string) => void;
+  /** Override trigger text (menu still uses each option.label). */
+  displayLabel?: string;
   "aria-label"?: string;
   id?: string;
   className?: string;
@@ -20,6 +22,7 @@ export function Select({
   value,
   options,
   onChange,
+  displayLabel,
   "aria-label": ariaLabel,
   id,
   className,
@@ -97,7 +100,7 @@ export function Select({
         onClick={() => setOpen((v) => !v)}
         onKeyDown={onTriggerKeyDown}
       >
-        <span className="select-value">{selected?.label ?? "—"}</span>
+        <span className="select-value">{displayLabel ?? selected?.label ?? "—"}</span>
         <ChevronDown
           size={14}
           strokeWidth={2.25}

@@ -4,22 +4,20 @@ import { visibleDetailTabs } from "./DetailTabs";
 type Props = {
   tab: DetailTab;
   displayStack: string | null;
-  hasPage: boolean;
-  hasEnvironment: boolean;
-  hasContext: boolean;
+  hasClient: boolean;
+  hasExtra: boolean;
   onTabChange: (tab: DetailTab) => void;
 };
 
-/** Tabs-only strip; event switching lives in IssueMetaBar. */
+/** Tabs-only strip; event switching lives in IssueEventStrip. */
 export function IssueToolbar({
   tab,
   displayStack,
-  hasPage,
-  hasEnvironment,
-  hasContext,
+  hasClient,
+  hasExtra,
   onTabChange,
 }: Props) {
-  const tabs = visibleDetailTabs(displayStack, hasPage, hasEnvironment, hasContext);
+  const tabs = visibleDetailTabs(displayStack, hasClient, hasExtra);
   if (tabs.length === 0) return null;
 
   return (

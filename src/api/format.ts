@@ -6,7 +6,7 @@ export function formatRelativeTime(iso: string): string {
   const diffMin = Math.round(diffSec / 60);
   if (diffMin < 60) return `${diffMin} 分钟前`;
   const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 48) return `${diffHr} 小时前`;
+  if (diffHr < 24) return `${diffHr} 小时前`;
   return `${Math.round(diffHr / 24)} 天前`;
 }
 

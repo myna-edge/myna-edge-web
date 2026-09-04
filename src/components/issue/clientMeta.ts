@@ -4,6 +4,8 @@ import type { MetaRow } from "./issueMeta";
 export type ClientSection = {
   title: string;
   rows: MetaRow[];
+  /** Nested panes (应用 → 本地存储 / 会话存储 / Cookie). */
+  panes?: ClientSection[];
 };
 
 function formatBytes(bytes?: number): string | null {
@@ -59,16 +61,6 @@ export function hasClientInfo(event: EventRow | null | undefined): boolean {
   return !!(event.user_agent || event.url || event.client_ip);
 }
 
-export function hasPageInfo(event: EventRow | null | undefined): boolean {
-  if (!event) return false;
-  return pageSections(event).length > 0;
-}
-
-export function hasEnvironmentInfo(event: EventRow | null | undefined): boolean {
-  if (!event) return false;
-  return environmentSections(event).length > 0;
-}
-
 function buildPageRows(event: EventRow): MetaRow[] {
   const page = event.client?.page;
   return [
@@ -92,16 +84,51 @@ function buildPageRows(event: EventRow): MetaRow[] {
   ].filter(Boolean) as MetaRow[];
 }
 
-export function pageSections(event: EventRow): ClientSection[] {
-  const rows = buildPageRows(event);
-  return rows.length > 0 ? [{ title: "页面", rows }] : [];
+export function hasClientSnapshot(event: EventRow | null | undefined): boolean {
+  if (!event) return false;
+  return clientSections(event).length > 0;
 }
 
-/** Everything under 客户端 except 页面. */
-export function environmentSections(event: EventRow): ClientSection[] {
-  return clientSections(event).filter((section) => section.title !== "页面");
+function pushSection(sections: ClientSection[], title: string, rows: MetaRow[]) {
+  if (rows.length > 0) sections.push({ title, rows });
 }
 
+function storagePane(
+  title: string,
+  snapshot:
+    | {
+        available: boolean;
+        keys?: number;
+        bytes?: number;
+        keyNames?: string[];
+        error?: string;
+      }
+    | undefined,
+): ClientSection | null {
+  if (!snapshot) return null;
+  const rows: MetaRow[] = [];
+  if (snapshot.available) {
+    rows.push(
+      ...([
+        row("键数", snapshot.keys?.toString()),
+        row("体积", formatBytes(snapshot.bytes)),
+        ...(snapshot.keyNames?.length
+          ? snapshot.keyNames.map((name) => row(name, "—", { mono: true })!)
+          : snapshot.keys === 0
+            ? [row("内容", "（空）")!]
+            : []),
+      ].filter(Boolean) as MetaRow[]),
+    );
+  } else {
+    rows.push(row("状态", snapshot.error ? `不可用（${snapshot.error}）` : "不可用")!);
+  }
+  return { title, rows };
+}
+
+/**
+ * Client snapshot for frontend debugging:
+ * 页面 → 浏览器 → 设备 → 屏幕 → 网络 → 请求头 → 性能 → 应用.
+ */
 export function clientSections(event: EventRow): ClientSection[] {
   const c = event.client;
   const uaFallback = parseBrowserFromUa(event.user_agent);
@@ -109,24 +136,7 @@ export function clientSections(event: EventRow): ClientSection[] {
   const browserVersion = c?.browser?.version ?? uaFallback.version;
   const sections: ClientSection[] = [];
 
-  const req = c?.request;
-  const requestRows = [
-    row("IP", resolveIp(event), { mono: true }),
-    row("X-Forwarded-For", req?.forwardedFor, { mono: true }),
-    row("X-Real-IP", req?.realIp, { mono: true }),
-    row("Host", req?.host, { mono: true }),
-    row("Origin", req?.origin, { mono: true }),
-    row("Referer", req?.referer, { mono: true, href: req?.referer }),
-    row("Accept-Language", req?.acceptLanguage, { mono: true }),
-    row("Accept-Encoding", req?.acceptEncoding, { mono: true }),
-    row("Method", req?.method, { mono: true }),
-    ...(req?.cf
-      ? Object.entries(req.cf).map(([key, value]) =>
-          row(`CF ${key}`, value, { mono: true }),
-        )
-      : []),
-  ].filter(Boolean) as MetaRow[];
-  if (requestRows.length > 0) sections.push({ title: "请求", rows: requestRows });
+  pushSection(sections, "页面", buildPageRows(event));
 
   const browserRows = [
     row("浏览器", browserName && browserVersion ? `${browserName} ${browserVersion}` : browserName),
@@ -143,6 +153,11 @@ export function clientSections(event: EventRow): ClientSection[] {
       "语言列表",
       c?.browser?.languages?.length ? c.browser.languages.join(", ") : null,
     ),
+    row("时区", c?.timezone),
+    row(
+      "UTC 偏移",
+      c?.timezoneOffset != null ? `${-c.timezoneOffset / 60}h` : null,
+    ),
     row("Cookie", boolLabel(c?.browser?.cookieEnabled)),
     row("在线", boolLabel(c?.browser?.onLine)),
     row("WebDriver", boolLabel(c?.browser?.webdriver)),
@@ -150,35 +165,21 @@ export function clientSections(event: EventRow): ClientSection[] {
     row("DNT", c?.browser?.doNotTrack ?? undefined),
     row("User-Agent", c?.browser?.userAgent ?? event.user_agent ?? undefined, { mono: true }),
   ].filter(Boolean) as MetaRow[];
-  if (browserRows.length > 0) sections.push({ title: "浏览器", rows: browserRows });
-
-  const network = c?.network;
-  const networkRows = [
-    row("有效类型", network?.effectiveType),
-    row("连接类型", network?.type),
-    row("下行 (Mbps)", network?.downlink?.toString()),
-    row("RTT (ms)", network?.rtt?.toString()),
-    row("省流模式", boolLabel(network?.saveData)),
-  ].filter(Boolean) as MetaRow[];
-  if (networkRows.length > 0) sections.push({ title: "网络", rows: networkRows });
-
-  const osRows = [
-    row("平台", c?.os?.platform),
-    row("UA 数据平台", c?.os?.userAgentPlatform),
-  ].filter(Boolean) as MetaRow[];
-  if (osRows.length > 0) sections.push({ title: "系统", rows: osRows });
+  pushSection(sections, "浏览器", browserRows);
 
   const deviceRows = [
+    row("平台", c?.os?.platform),
+    row("UA 数据平台", c?.os?.userAgentPlatform),
     row("厂商", c?.device?.vendor),
     row("CPU 核心", c?.device?.hardwareConcurrency?.toString()),
     row("内存 (GB)", c?.device?.deviceMemory?.toString()),
     row("触控点数", c?.device?.maxTouchPoints?.toString()),
   ].filter(Boolean) as MetaRow[];
-  if (deviceRows.length > 0) sections.push({ title: "设备", rows: deviceRows });
+  pushSection(sections, "设备", deviceRows);
 
   const screen = c?.screen;
   const viewport = c?.viewport;
-  const displayRows = [
+  const screenRows = [
     row(
       "屏幕",
       screen?.width != null && screen?.height != null
@@ -218,13 +219,39 @@ export function clientSections(event: EventRow): ClientSection[] {
         : null,
     ),
   ].filter(Boolean) as MetaRow[];
-  if (displayRows.length > 0) sections.push({ title: "显示", rows: displayRows });
+  pushSection(sections, "屏幕", screenRows);
 
-  const pageRows = buildPageRows(event);
-  if (pageRows.length > 0) sections.push({ title: "页面", rows: pageRows });
+  const network = c?.network;
+  const networkRows = [
+    row("有效类型", network?.effectiveType),
+    row("连接类型", network?.type),
+    row("下行 (Mbps)", network?.downlink?.toString()),
+    row("RTT (ms)", network?.rtt?.toString()),
+    row("省流模式", boolLabel(network?.saveData)),
+  ].filter(Boolean) as MetaRow[];
+  pushSection(sections, "网络", networkRows);
+
+  const req = c?.request;
+  const headerRows = [
+    row("IP", resolveIp(event), { mono: true }),
+    row("X-Forwarded-For", req?.forwardedFor, { mono: true }),
+    row("X-Real-IP", req?.realIp, { mono: true }),
+    row("Host", req?.host, { mono: true }),
+    row("Origin", req?.origin, { mono: true }),
+    row("Referer", req?.referer, { mono: true, href: req?.referer }),
+    row("Accept-Language", req?.acceptLanguage, { mono: true }),
+    row("Accept-Encoding", req?.acceptEncoding, { mono: true }),
+    row("Method", req?.method, { mono: true }),
+    ...(req?.cf
+      ? Object.entries(req.cf).map(([key, value]) =>
+          row(`CF ${key}`, value, { mono: true }),
+        )
+      : []),
+  ].filter(Boolean) as MetaRow[];
+  pushSection(sections, "请求头", headerRows);
 
   const perf = c?.performance;
-  const perfRows = [
+  const navigationRows = [
     row("导航类型", perf?.navigation?.type),
     row("重定向次数", perf?.navigation?.redirectCount?.toString()),
     row("DOM Interactive", formatMs(perf?.navigation?.domInteractive)),
@@ -233,92 +260,69 @@ export function clientSections(event: EventRow): ClientSection[] {
     row("传输体积", formatBytes(perf?.navigation?.transferSize)),
     row("编码体积", formatBytes(perf?.navigation?.encodedBodySize)),
     row("解码体积", formatBytes(perf?.navigation?.decodedBodySize)),
+    row("Time Origin", perf?.timeOrigin?.toString(), { mono: true }),
+  ].filter(Boolean) as MetaRow[];
+  const memoryRows = [
     row("JS 堆上限", formatBytes(perf?.memory?.jsHeapSizeLimit)),
     row("JS 堆总量", formatBytes(perf?.memory?.totalJSHeapSize)),
     row("JS 堆已用", formatBytes(perf?.memory?.usedJSHeapSize)),
-    row("Time Origin", perf?.timeOrigin?.toString(), { mono: true }),
   ].filter(Boolean) as MetaRow[];
-  if (perfRows.length > 0) sections.push({ title: "性能", rows: perfRows });
+  const perfPanes = [
+    navigationRows.length > 0 ? { title: "导航", rows: navigationRows } : null,
+    memoryRows.length > 0 ? { title: "内存", rows: memoryRows } : null,
+  ].filter(Boolean) as ClientSection[];
+  if (perfPanes.length > 1) {
+    sections.push({
+      title: "性能",
+      rows: perfPanes[0].rows,
+      panes: perfPanes,
+    });
+  } else if (perfPanes.length === 1) {
+    sections.push({ title: "性能", rows: perfPanes[0].rows });
+  }
 
   const storage = c?.storage;
   if (storage) {
-    const storageRows: MetaRow[] = [];
-    const ls = storage.localStorage;
-    if (ls) {
-      if (ls.available) {
-        storageRows.push(
-          ...([
-            row("localStorage 键数", ls.keys?.toString()),
-            row("localStorage 体积", formatBytes(ls.bytes)),
-            row(
-              "localStorage 键名",
-              ls.keyNames?.length ? ls.keyNames.join(", ") : ls.keys === 0 ? "（空）" : null,
-              { mono: true },
-            ),
-          ].filter(Boolean) as MetaRow[]),
-        );
-      } else {
-        storageRows.push(
-          row("localStorage", ls.error ? `不可用（${ls.error}）` : "不可用")!,
-        );
-      }
-    }
+    const panes = [
+      storagePane("Local Storage", storage.localStorage),
+      storagePane("Session Storage", storage.sessionStorage),
+      (() => {
+        const cookies = storage.cookies;
+        if (!cookies) return null;
+        const rows: MetaRow[] = [];
+        if (cookies.available) {
+          rows.push(
+            ...([
+              row("数量", cookies.count?.toString()),
+              row("体积", formatBytes(cookies.bytes)),
+              ...(cookies.names?.length
+                ? cookies.names.map((name) => row(name, "—", { mono: true })!)
+                : cookies.count === 0
+                  ? [row("内容", "（空）")!]
+                  : []),
+            ].filter(Boolean) as MetaRow[]),
+          );
+        } else {
+          rows.push(row("状态", "不可用")!);
+        }
+        return { title: "Cookies", rows };
+      })(),
+      storage.indexedDB
+        ? {
+            title: "IndexedDB",
+            rows: [row("状态", storage.indexedDB.available ? "可用" : "不可用")!],
+          }
+        : null,
+    ].filter(Boolean) as ClientSection[];
 
-    const ss = storage.sessionStorage;
-    if (ss) {
-      if (ss.available) {
-        storageRows.push(
-          ...([
-            row("sessionStorage 键数", ss.keys?.toString()),
-            row("sessionStorage 体积", formatBytes(ss.bytes)),
-            row(
-              "sessionStorage 键名",
-              ss.keyNames?.length ? ss.keyNames.join(", ") : ss.keys === 0 ? "（空）" : null,
-              { mono: true },
-            ),
-          ].filter(Boolean) as MetaRow[]),
-        );
-      } else {
-        storageRows.push(
-          row("sessionStorage", ss.error ? `不可用（${ss.error}）` : "不可用")!,
-        );
-      }
+    if (panes.length > 0) {
+      sections.push({
+        title: "应用",
+        rows: panes[0].rows,
+        panes,
+      });
     }
-
-    const cookies = storage.cookies;
-    if (cookies) {
-      if (cookies.available) {
-        storageRows.push(
-          ...([
-            row("Cookie 数量", cookies.count?.toString()),
-            row("Cookie 体积", formatBytes(cookies.bytes)),
-            row(
-              "Cookie 名称",
-              cookies.names?.length ? cookies.names.join(", ") : cookies.count === 0 ? "（空）" : null,
-              { mono: true },
-            ),
-          ].filter(Boolean) as MetaRow[]),
-        );
-      } else {
-        storageRows.push(row("Cookie", "不可用")!);
-      }
-    }
-
-    if (storage.indexedDB) {
-      storageRows.push(row("IndexedDB", storage.indexedDB.available ? "可用" : "不可用")!);
-    }
-
-    if (storageRows.length > 0) sections.push({ title: "Storage", rows: storageRows });
   }
-
-  const localeRows = [
-    row("时区", c?.timezone),
-    row(
-      "UTC 偏移",
-      c?.timezoneOffset != null ? `${-c.timezoneOffset / 60}h` : null,
-    ),
-  ].filter(Boolean) as MetaRow[];
-  if (localeRows.length > 0) sections.push({ title: "区域", rows: localeRows });
 
   if (sections.length === 0 && event.user_agent) {
     sections.push({
